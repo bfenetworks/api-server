@@ -1,0 +1,19 @@
+# This is an example .goreleaser.yml file with some sane defaults.
+# Make sure to check the documentation at https://goreleaser.com
+builds:
+  -
+    goos:
+      - darwin
+      - linux
+      - windows
+    goarch:
+      - amd64
+      - arm
+      - arm64
+archives:
+  - 
+    files:
+      - LICENSE
+      - docs/*
+      - conf/*
+      - README.md
