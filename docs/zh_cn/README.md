@@ -1,5 +1,18 @@
 API Server 是 BFE 控制面核心模块，完成配置的录入、存储和导出。
 
+# 控制面组件
+![架构](/docs/zh_cn/assert/deploy_architecture.png)
+
+图1：控制面组件
+
+BFE控制面包含如下组件：
+- API Server: 对外提供Open API接口，完成BFE配置的变更、存储和下发
+- Dashboard: 管理控制台，用于BFE集群的可视化管理
+    - 仓库地址在 [bfenetwork/dashboard](https://github.com/bfenetworks/dashboard)
+- Conf Agent: 配置加载组件，完成最新配置的获取和 BFE 热加载的触发
+    - 仓库地址在 [bfenetwork/conf-agent](https://github.com/bfenetworks/conf-agent)
+
+
 # 快速开始
 通过查看 [部署说明](/docs/zh_cn/deploy.md) 快速运行 API Server。
 

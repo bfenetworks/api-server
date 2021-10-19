@@ -36,14 +36,14 @@ BFE控制面包含如下组件：
 1. 初始化数据库： 执行 `mysql -u{user} -p{password} < db_ddl.sql`
 1. 获取API Server可执行程序
     - 方式一：通过源码编译：clone本仓库后进入项目根目录，执行 `make`，output文件夹包括了可执行文件和初始配置文件
-    - 方式二：直接进入 [release](https://github.com/bfenetworks/api-server/releases) 页面下载相应的编译产出
+    - 方式二：直接进入 [releases](https://github.com/bfenetworks/api-server/releases) 页面下载相应的编译产出
 1. 修改初始配置文件，详见[配置文件说明](./config_param.md)
 1. 启动 API Server。执行`./api-server -c ./conf -sc api_server.toml -l ./log `。如果不需要指定启动参数，直接执行 `./api-server` 即可
 
 ## Dashboard 部署
 1. 获取 Dashboard 产出
     - 方式一：通过源码编译： clone [bfenetwork/dashboard](https://github.com/bfenetworks/dashboard) 仓库后进入项目根目录，执行 `sh build.sh`， output 文件夹就是静态配置文件
-    - 方式二：直接进入 [dashboard/release](https://github.com/bfenetworks/dashboard/releases) 页面下载相应的编译产出
+    - 方式二：直接进入 [dashboard/releases](https://github.com/bfenetworks/dashboard/releases) 页面下载相应的编译产出
 1. 部署：将output文件夹的内容拷贝到 API Server 的 static 文件夹（默认在api-server可执行文件同级目录）中即可
 1. 浏览器打开 http://host:{ServerPort} (ServerPort 为 API Server 部署时配置的端口号) 即可看到登录页面，测试账号和密码都是 `admin`。登陆后，请立刻修改您的admin的密码
 
