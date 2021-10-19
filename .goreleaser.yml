@@ -17,3 +17,5 @@ archives:
       - docs/*
       - conf/*
       - README.md
+      - db_ddl.sql
+      - static/*
