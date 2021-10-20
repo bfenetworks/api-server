@@ -116,21 +116,12 @@ func newRouteTableFile(version string, productMapID2Name map[int64]string,
 	basicRule := route_rule_conf.ProductBasicRouteRuleFile{}
 	advanceRule := route_rule_conf.ProductAdvancedRouteRuleFile{}
 
-	clusterName := func(cn string) *string {
-		if cn == icluster_conf.RouteAdvancedModeClusterName4DP {
-			return &cn
-		}
-
-		tmp := "cluster_" + cn
-		return &tmp
-	}
-
 	newBasicRouteRuleFiles := func(brrs []*BasicRouteRule) (bs []route_rule_conf.BasicRouteRuleFile) {
 		for _, brr := range brrs {
 			bs = append(bs, route_rule_conf.BasicRouteRuleFile{
 				Hostname:    brr.HostNames,
 				Path:        brr.Paths,
-				ClusterName: clusterName(brr.ClusterName),
+				ClusterName: &brr.ClusterName,
 			})
 		}
 
@@ -141,7 +132,7 @@ func newRouteTableFile(version string, productMapID2Name map[int64]string,
 		for _, arr := range arrs {
 			as = append(as, route_rule_conf.AdvancedRouteRuleFile{
 				Cond:        &arr.Expression,
-				ClusterName: clusterName(arr.ClusterName),
+				ClusterName: &arr.ClusterName,
 			})
 		}
 

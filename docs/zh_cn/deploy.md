@@ -38,6 +38,7 @@ BFE控制面包含如下组件：
     - 方式一：通过源码编译：clone本仓库后进入项目根目录，执行 `make`，output文件夹包括了可执行文件和初始配置文件
     - 方式二：直接进入 [releases](https://github.com/bfenetworks/api-server/releases) 页面下载相应的编译产出
 1. 修改初始配置文件，详见[配置文件说明](./config_param.md)
+- 特别注意：绝大多数配置可以使用默认配置，最小修改集合为 **数据库用户名和密码**
 1. 启动 API Server。执行`./api-server -c ./conf -sc api_server.toml -l ./log `。如果不需要指定启动参数，直接执行 `./api-server` 即可
 
 ## Dashboard 部署
@@ -60,5 +61,5 @@ Conf Agent和 BFE 转发引擎同机部署。
 1. 获取Conf Agent可执行程序
     - 方式一：通过源码编译：clone [bfenetwork/conf-agent](https://github.com/bfenetworks/conf-agent) 仓库后进入项目根目录，执行 `make`， output文件夹包括了可执行文件和初始配置文件
     - 方式二：直接进入 [release](https://github.com/bfenetworks/conf-agent/releases) 页面下载相应的编译产出
-1. 修改配置，详见 [配置文件说明](https://github.com/bfenetworks/conf-agent/docs/zh-cn/config.md)，使其能访问API Server导出最新的配置
+1. 修改配置，详见 [配置文件说明](https://github.com/bfenetworks/conf-agent/blob/develop/docs/zh_cn/config.md)，使其能访问API Server导出最新的配置
 1. 启动 Conf Agent。执行 `./conf-agent`

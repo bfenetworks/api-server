@@ -603,7 +603,7 @@ func NewBfeClusterConf(version string, clusters []*Cluster) *cluster_conf.BfeClu
 			continue
 		}
 
-		clusterConfMap["cluster_"+cluster.Name] = cluster_conf.ClusterConf{
+		clusterConfMap[cluster.Name] = cluster_conf.ClusterConf{
 			BackendConf: &cluster_conf.BackendBasic{
 				Protocol:              lib.PString("http"),
 				TimeoutConnSrv:        int322intp(cluster.Basic.Timeouts.TimeoutConnServ),

@@ -12,7 +12,6 @@ Lang          = "zh"
 "Authorizate Fail"      = "鉴权失败"
 "Unknown Exception"     = "未知异常"
 
-"^Health Check Job$"      = "健康检查任务"
 "^Product Not Exist$"     = "产品线不存在"
 "^Not Cluste Existed$"    = "暂无集群"
 "^Want Prefix (.+).$"       = "期望前缀 %s."
