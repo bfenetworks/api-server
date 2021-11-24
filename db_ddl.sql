@@ -197,7 +197,7 @@ CREATE TABLE `users` (
   `name` varchar(255) NOT NULL,
   `password` varchar(255) NOT NULL DEFAULT '',
   `session_key` varchar(20) NOT NULL DEFAULT '',
-  `session_key_created_at` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `session_key_created_at` datetime NOT NULL DEFAULT '0000-01-01 00:00:00',
   `roles` varchar(2048) NOT NULL DEFAULT '',
   `created_at` datetime NOT NULL,
   `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
