@@ -12,16 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-/* access_control.go - access control of api */
-/*
-modification history
---------------------
-2015/9/24, by taochunhua, create
-*/
-/*
-DESCRIPTION
-*/
-
 package middleware
 
 import (
