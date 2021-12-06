@@ -31,7 +31,7 @@ BFE控制面包含如下组件：
 1. Dashboard 部署
 1. Conf Agent 部署
 
-## API Server 部署
+## APIServer部署
 1. 安装MySQL数据库：数据库版本5.6以上即可，具体安装过程本文不详细描述
 1. 初始化数据库： 执行 `mysql -u{user} -p{password} < db_ddl.sql`
 1. 获取API Server可执行程序
@@ -41,7 +41,7 @@ BFE控制面包含如下组件：
 - 特别注意：绝大多数配置可以使用默认配置，最小修改集合为 **数据库用户名和密码**
 1. 启动 API Server。执行`./api-server -c ./conf -sc api_server.toml -l ./log `。如果不需要指定启动参数，直接执行 `./api-server` 即可
 
-## Dashboard 部署
+## Dashboard部署
 1. 获取 Dashboard 产出
     - 方式一：通过源码编译： clone [bfenetwork/dashboard](https://github.com/bfenetworks/dashboard) 仓库后进入项目根目录，执行 `sh build.sh`， output 文件夹就是静态配置文件
     - 方式二：直接进入 [dashboard/releases](https://github.com/bfenetworks/dashboard/releases) 页面下载相应的编译产出
