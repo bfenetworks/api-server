@@ -51,7 +51,7 @@ func (rm *RDBClusterStorager) ClusterUpdate(ctx context.Context, product *ibasic
 
 	clusterID := old.ID
 
-	if mlb := param.ManualScheduler; mlb != nil {
+	if mlb := param.Scheduler; mlb != nil {
 		if err = rm.upsertLBMatrix(dbCtx, old, product, mlb); err != nil {
 			return err
 		}
@@ -87,7 +87,7 @@ func (rm *RDBClusterStorager) ClusterCreate(ctx context.Context, product *ibasic
 		ID: clusterID,
 	}
 
-	if mlb := param.ManualScheduler; mlb != nil {
+	if mlb := param.Scheduler; mlb != nil {
 		if err = rm.upsertLBMatrix(dbCtx, cluster, product, mlb); err != nil {
 			return 0, err
 		}
@@ -211,7 +211,7 @@ func (rm *RDBClusterStorager) fetchLBMatrixs(dbCtx *lib.DBContext, clusterIDs []
 }
 
 func newCluster(dc *dao.TCluster, subClusters []*icluster_conf.SubCluster, capacities map[string]int64,
-	manaualScheduler map[string]map[string]int) *icluster_conf.Cluster {
+	scheduler map[string]map[string]int) *icluster_conf.Cluster {
 
 	return &icluster_conf.Cluster{
 		ID:          dc.ID,
@@ -249,7 +249,7 @@ func newCluster(dc *dao.TCluster, subClusters []*icluster_conf.SubCluster, capac
 			SessionSticky: dc.SessionSticky,
 		},
 
-		ManualScheduler: manaualScheduler,
+		Scheduler: scheduler,
 		PassiveHealthCheck: &icluster_conf.ClusterPassiveHealthCheck{
 			Schema:     dc.HealthcheckSchem,
 			Interval:   dc.HealthcheckInterval,

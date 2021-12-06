@@ -45,7 +45,7 @@ func newUpdateParam4Update(req *http.Request) (*UpsertParam, error) {
 		return nil, xerror.WrapParamErrorWithMsg("Invoke Bind API To Modify SubCluster")
 	}
 
-	if param.ManualScheduler != nil {
+	if param.Scheduler != nil {
 		return nil, xerror.WrapParamErrorWithMsg("Invoke Scheduler API To Modify Scheduler Setting")
 	}
 

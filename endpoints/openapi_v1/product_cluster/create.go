@@ -55,7 +55,7 @@ type UpsertParam struct {
 
 	SubClusters []string `json:"sub_clusters"`
 
-	ManualScheduler map[string]map[string]int `json:"manual_scheduler"`
+	Scheduler map[string]map[string]int `json:"scheduler"`
 
 	PassiveHealthCheck *PassiveHealthCheckParam `json:"passive_health_check"`
 }
@@ -128,8 +128,8 @@ func newCreateParam4Create(req *http.Request) (*UpsertParam, error) {
 		return nil, err
 	}
 
-	if len(param.ManualScheduler) == 0 {
-		return nil, xerror.WrapParamErrorWithMsg("ManualScheduler Want Be Set")
+	if len(param.Scheduler) == 0 {
+		return nil, xerror.WrapParamErrorWithMsg("Scheduler Want Be Set")
 	}
 
 	if len(param.SubClusters) == 0 {
@@ -162,10 +162,10 @@ var (
 
 func clusterParamControlModel(param *UpsertParam) *icluster_conf.ClusterParam {
 	rst := &icluster_conf.ClusterParam{
-		Name:            param.Name,
-		Description:     param.Description,
-		SubClusters:     param.SubClusters,
-		ManualScheduler: param.ManualScheduler,
+		Name:        param.Name,
+		Description: param.Description,
+		SubClusters: param.SubClusters,
+		Scheduler:   param.Scheduler,
 	}
 
 	if basic := param.Basic; basic != nil {

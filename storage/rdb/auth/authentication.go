@@ -35,13 +35,17 @@ func NewAuthenticateStorager(dbCtxFactory lib.DBContextFactory) *RDBAuthenticate
 	}
 }
 
-func (ps *RDBAuthenticateStorager) FetchUserList(ctx context.Context, param *iauth.UserFilter) ([]*iauth.User, error) {
+func (ps *RDBAuthenticateStorager) FetchUserList(ctx context.Context, filter *iauth.UserFilter) ([]*iauth.User, error) {
 	dbCtx, err := ps.dbCtxFactory(ctx)
 	if err != nil {
 		return nil, err
 	}
 
-	list, err := dao.TUserList(dbCtx, userFilter2Param(param))
+	if filter == nil {
+		filter = &iauth.UserFilter{}
+	}
+	filter.Types = []int8{iauth.UserTypeJWT, iauth.UserTypeNormal}
+	list, err := dao.TUserList(dbCtx, userFilter2Param(filter))
 	if err != nil {
 		return nil, err
 	}
@@ -74,66 +78,10 @@ func (ps *RDBAuthenticateStorager) UpdateUser(ctx context.Context, user *iauth.U
 	}
 
 	_, err = dao.TUserUpdate(dbCtx, userParamM2D(param), &dao.TUserParam{
-		Name: &user.Name,
+		ID: &user.ID,
 	})
 
 	return err
-}
-
-func userD2M(param *dao.TUser) *iauth.User {
-	if param == nil {
-		return nil
-	}
-	user := &iauth.User{
-		ID:              param.ID,
-		Name:            param.Name,
-		Password:        param.Password,
-		SessionKey:      param.SessionKey,
-		SessionCreateAt: param.SessionKeyCreatedAt,
-	}
-	for _, one := range strings.Split(param.Roles, ",") {
-		user.Roles = append(user.Roles, &iauth.Role{
-			Name: one,
-		})
-	}
-
-	return user
-}
-
-func userFilter2Param(filter *iauth.UserFilter) *dao.TUserParam {
-	if filter == nil {
-		return nil
-	}
-
-	return &dao.TUserParam{
-		Name:       filter.Name,
-		SessionKey: filter.SessionKey,
-	}
-}
-
-func userParamM2D(param *iauth.UserParam) *dao.TUserParam {
-	if param == nil {
-		return nil
-	}
-
-	var (
-		roles []string
-		rs    *string
-	)
-	if param.Roles != nil {
-		for _, one := range param.Roles {
-			roles = append(roles, one.Name)
-		}
-		rs = lib.PString(strings.Join(roles, ","))
-	}
-
-	return &dao.TUserParam{
-		Name:                param.Name,
-		SessionKey:          param.SessionKey,
-		SessionKeyCreatedAt: param.SessionCreateAt,
-		Roles:               rs,
-		Password:            param.Password,
-	}
 }
 
 func (ps *RDBAuthenticateStorager) CreateUser(ctx context.Context, param *iauth.UserParam) error {
@@ -154,8 +102,142 @@ func (ps *RDBAuthenticateStorager) DeleteUser(ctx context.Context, user *iauth.U
 	}
 
 	_, err = dao.TUserDelete(dbCtx, &dao.TUserParam{
-		Name: &user.Name,
+		ID: &user.ID,
 	})
 
 	return err
+}
+
+func userD2M(param *dao.TUser) *iauth.User {
+	if param == nil {
+		return nil
+	}
+
+	user := &iauth.User{
+		ID:                 param.ID,
+		Name:               param.Name,
+		Type:               param.Type,
+		Admin:              strings.Contains(param.Scopes, iauth.ScopeSystem),
+		Password:           param.Password,
+		SessionKey:         param.Ticket,
+		SessionKeyCreateAt: param.TicketCreatedAt,
+	}
+
+	return user
+}
+
+func userFilter2Param(filter *iauth.UserFilter) *dao.TUserParam {
+	if filter == nil {
+		return nil
+	}
+
+	return &dao.TUserParam{
+		IDs:    filter.IDs,
+		Name:   filter.Name,
+		Ticket: filter.SessionKey,
+		Type:   filter.Type,
+		Types:  filter.Types,
+	}
+}
+
+func userParamM2D(param *iauth.UserParam) *dao.TUserParam {
+	if param == nil {
+		return nil
+	}
+
+	var scopes *string
+	if param.Scopes != nil {
+		scopes = lib.PString(strings.Join(param.Scopes, ","))
+	}
+
+	return &dao.TUserParam{
+		Name:            param.Name,
+		Type:            param.Type,
+		Password:        param.Password,
+		Scopes:          scopes,
+		Ticket:          param.SessionKey,
+		TicketCreatedAt: param.SessionKeyCreateAt,
+	}
+}
+
+func (ps *RDBAuthenticateStorager) FetchTokens(ctx context.Context, filter *iauth.TokenFilter) ([]*iauth.Token, error) {
+	dbCtx, err := ps.dbCtxFactory(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	list, err := dao.TUserList(dbCtx, tokenFilter2Param(filter))
+	if err != nil {
+		return nil, err
+	}
+
+	rst := []*iauth.Token{}
+	for _, one := range list {
+		rst = append(rst, tokenD2M(one))
+	}
+
+	return rst, nil
+}
+
+func (ps *RDBAuthenticateStorager) CreateToken(ctx context.Context, param *iauth.TokenParam) error {
+	dbCtx, err := ps.dbCtxFactory(ctx)
+	if err != nil {
+		return err
+	}
+
+	_, err = dao.TUserCreate(dbCtx, tokenParamM2D(param))
+
+	return err
+}
+func (ps *RDBAuthenticateStorager) DeleteToken(ctx context.Context, token *iauth.Token) error {
+	dbCtx, err := ps.dbCtxFactory(ctx)
+	if err != nil {
+		return err
+	}
+
+	_, err = dao.TUserDelete(dbCtx, &dao.TUserParam{
+		Name: &token.Name,
+		Type: lib.PInt8(iauth.UserTypeToken),
+	})
+
+	return err
+}
+
+func tokenD2M(param *dao.TUser) *iauth.Token {
+	if param == nil {
+		return nil
+	}
+
+	return &iauth.Token{
+		ID:    param.ID,
+		Name:  param.Name,
+		Token: param.Ticket,
+		Scope: param.Scopes,
+	}
+}
+
+func tokenFilter2Param(filter *iauth.TokenFilter) *dao.TUserParam {
+	if filter == nil {
+		filter = &iauth.TokenFilter{}
+	}
+
+	return &dao.TUserParam{
+		IDs:    filter.IDs,
+		Name:   filter.Name,
+		Type:   lib.PInt8(iauth.UserTypeToken),
+		Ticket: filter.Token,
+	}
+}
+
+func tokenParamM2D(param *iauth.TokenParam) *dao.TUserParam {
+	if param == nil {
+		return nil
+	}
+
+	return &dao.TUserParam{
+		Name:   param.Name,
+		Type:   lib.PInt8(iauth.UserTypeToken),
+		Ticket: param.Token,
+		Scopes: param.Scope,
+	}
 }

@@ -19,22 +19,9 @@ import (
 	"strings"
 
 	"github.com/bfenetworks/api-server/lib/xerror"
-	"github.com/bfenetworks/api-server/lib/xreq"
 	"github.com/bfenetworks/api-server/model/iauth"
 	"github.com/bfenetworks/api-server/stateful/container"
 )
-
-type UserProbeParam struct {
-	UserID   *int64  `bind:"product_id"`
-	UserName *string `bind:"product_name"`
-}
-
-func newUserProbeParam(req *http.Request) (*UserProbeParam, error) {
-	param := &UserProbeParam{}
-	err := xreq.BindURI(req, param)
-
-	return param, err
-}
 
 func UserProbeAction(req *http.Request) (*http.Request, error) {
 	authHeader := req.Header.Get("Authorization")
@@ -52,10 +39,10 @@ func UserProbeAction(req *http.Request) (*http.Request, error) {
 		Identify: ss[1],
 	}
 
-	user, err := container.AuthenticateManager.Authenticate(req.Context(), param)
+	vistor, err := container.AuthenticateManager.Authenticate(req.Context(), param)
 	if err != nil {
 		return nil, err
 	}
 
-	return req.WithContext(iauth.NewUserContext(req.Context(), user)), nil
+	return req.WithContext(iauth.NewVistorContext(req.Context(), vistor)), nil
 }

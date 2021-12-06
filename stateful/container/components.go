@@ -25,31 +25,30 @@ import (
 )
 
 var (
-	TxnStoragerSingleton                itxn.TxnStorager
-	VersionControlStoragerSingleton     iversion_control.VersionControlStorager
-	RouteRuleStoragerSingleton          iroute_conf.RouteRuleStorager
-	ProductStoragerSingleton            ibasic.ProductStorager
-	BFEClusterStoragerSingleton         ibasic.BFEClusterStorager
-	DomainStoragerSingleton             iroute_conf.DomainStorager
-	ClusterStoragerSingleton            icluster_conf.ClusterStorager
-	PoolStoragerSingleton               icluster_conf.PoolStorager
-	SubClusterStoragerSingleton         icluster_conf.SubClusterStorager
-	CertificateStoragerSingleton        iprotocol.CertificateStorager
-	AuthenticateStoragerSingleton       iauth.AuthenticateStorager
-	ProductAuthorizateStoragerSingleton iauth.ProductAuthorizateStorager
-	ExtraFileStoragerSingleton          ibasic.ExtraFileStorager
+	TxnStoragerSingleton            itxn.TxnStorager
+	VersionControlStoragerSingleton iversion_control.VersionControlStorager
+	RouteRuleStoragerSingleton      iroute_conf.RouteRuleStorager
+	ProductStoragerSingleton        ibasic.ProductStorager
+	BFEClusterStoragerSingleton     ibasic.BFEClusterStorager
+	DomainStoragerSingleton         iroute_conf.DomainStorager
+	ClusterStoragerSingleton        icluster_conf.ClusterStorager
+	PoolStoragerSingleton           icluster_conf.PoolStorager
+	SubClusterStoragerSingleton     icluster_conf.SubClusterStorager
+	CertificateStoragerSingleton    iprotocol.CertificateStorager
+	AuthenticateStoragerSingleton   iauth.AuthenticateStorager
+	AuthorizeStoragerSingleton      iauth.AuthorizeStorager
+	ExtraFileStoragerSingleton      ibasic.ExtraFileStorager
 
-	ExtraFileManager            *ibasic.ExtraFileManager
-	ProductManager              *ibasic.ProductManager
-	DomainManager               *iroute_conf.DomainManager
-	BFEClusterManager           *ibasic.BFEClusterManager
-	VersionControlManager       *iversion_control.VersionControlManager
-	RouteRuleManager            *iroute_conf.RouteRuleManager
-	ClusterManager              *icluster_conf.ClusterManager
-	SubClusterManager           *icluster_conf.SubClusterManager
-	CertificateManager          *iprotocol.CertificateManager
-	AuthenticateManager         *iauth.AuthenticateManager
-	ProductAuthorizateManager   *iauth.ProductAuthorizateManager
-	FeatureAuthorizerrSingleton *iauth.FeatureAuthorizer
-	PoolManager                 *icluster_conf.PoolManager
+	ExtraFileManager      *ibasic.ExtraFileManager
+	ProductManager        *ibasic.ProductManager
+	DomainManager         *iroute_conf.DomainManager
+	BFEClusterManager     *ibasic.BFEClusterManager
+	VersionControlManager *iversion_control.VersionControlManager
+	RouteRuleManager      *iroute_conf.RouteRuleManager
+	ClusterManager        *icluster_conf.ClusterManager
+	SubClusterManager     *icluster_conf.SubClusterManager
+	CertificateManager    *iprotocol.CertificateManager
+	AuthenticateManager   *iauth.AuthenticateManager
+	AuthorizeManager      *iauth.AuthorizeManager
+	PoolManager           *icluster_conf.PoolManager
 )

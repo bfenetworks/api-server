@@ -229,7 +229,7 @@ func (rm *RouteRuleManager) UpsertProductRule(ctx context.Context, product *ibas
 
 				cluster, ok := clusterMap[clusterName]
 				if !ok {
-					return xerror.WrapModelErrorWithMsg("Cluster %s Not Existed", clusterName)
+					return xerror.WrapModelErrorWithMsg("Cluster %s Not Exist", clusterName)
 				}
 
 				if !stateful.IgnoreBNSStatusCheck {

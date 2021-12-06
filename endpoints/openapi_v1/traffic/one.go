@@ -50,10 +50,9 @@ type SubCluster struct {
 // OneData Request Param
 // AUTO GEN BY ctrl, MODIFY AS U NEED
 type OneData struct {
-	Cluster         string                    `json:"cluster" uri:"cluster"`
-	Scheduler       string                    `json:"scheduler" uri:"scheduler"`
-	ManualScheduler map[string]map[string]int `json:"manual_scheduler,omitempty" uri:"manual_scheduler"`
-	AutoScheduler   *AutoScheduler            `json:"auto_scheduler,omitempty" uri:"auto_scheduler"`
+	Cluster       string                    `json:"cluster" uri:"cluster"`
+	Scheduler     map[string]map[string]int `json:"scheduler,omitempty" uri:"scheduler"`
+	AutoScheduler *AutoScheduler            `json:"auto_scheduler,omitempty" uri:"auto_scheduler"`
 }
 
 // OneRoute route
@@ -89,14 +88,13 @@ func oneActionProcess(req *http.Request, param *OneParam) (*OneData, error) {
 		return nil, xerror.WrapRecordNotExist("Cluster")
 	}
 
-	if cluster.ManualScheduler == nil {
+	if cluster.Scheduler == nil {
 		return nil, xerror.WrapDirtyDataErrorWithMsg("Manual Mode, But Without LbMatrix Setting")
 	}
 
 	return &OneData{
-		Cluster:         cluster.Name,
-		Scheduler:       "manual",
-		ManualScheduler: cluster.ManualScheduler,
+		Cluster:   cluster.Name,
+		Scheduler: cluster.Scheduler,
 	}, nil
 }
 

@@ -36,7 +36,7 @@ type UpsertParam struct {
 // CreateRoute route
 // AUTO GEN BY ctrl, MODIFY AS U NEED
 var CreateEndpoint = &xreq.Endpoint{
-	Path:       "/products/{product_name}/instance_pools",
+	Path:       "/products/{product_name}/instance-pools",
 	Method:     http.MethodPost,
 	Handler:    xreq.Convert(CreateAction),
 	Authorizer: iauth.FAP(iauth.FeatureProductPool, iauth.ActionCreate),

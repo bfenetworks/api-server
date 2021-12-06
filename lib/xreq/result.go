@@ -24,6 +24,7 @@ import (
 	"github.com/bfenetworks/api-server/lib/xerror"
 	"github.com/bfenetworks/api-server/model/iauth"
 	"github.com/bfenetworks/api-server/stateful"
+	"github.com/bfenetworks/api-server/stateful/container"
 )
 
 type Handler func(req *http.Request) (interface{}, error)
@@ -65,7 +66,7 @@ type Endpoint struct {
 
 	RegisterHandler func(*mux.Router) *mux.Route
 
-	Authorizer iauth.Authorizer
+	Authorizer *iauth.Authorization
 }
 
 func (ep *Endpoint) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
@@ -91,20 +92,9 @@ func (ep *Endpoint) Register(router *mux.Router) *mux.Router {
 				ctx := req.Context()
 				GetRequestInfo(ctx).URLPattern = ep.Path
 
-				user, err := iauth.MustGetUser(ctx)
+				err := container.AuthorizeManager.Authorizate(ctx, authorizer)
 				if err != nil {
 					ErrorRender(err, rw, req)
-					return
-				}
-
-				ok, err := iauth.Authorizate(ctx, authorizer, user)
-				if err != nil {
-					ErrorRender(err, rw, req)
-					return
-				}
-
-				if !ok {
-					ErrorRender(xerror.WrapAuthorizateFailErrorWithMsg("Auth Deny"), rw, req)
 					return
 				}
 
@@ -126,14 +116,11 @@ func (ep *Endpoint) Register(router *mux.Router) *mux.Router {
 type Result struct {
 	OriginErr error `json:"-"`
 
-	Code      int         `json:"ErrNum"`         // http status code
-	ErrMsg    string      `json:"ErrMsg"`         // return message if failed
-	Data      interface{} `json:"Data,omitempty"` // return data if success
-	ManualURL string      `json:"Manual,omitempty"`
+	Code   int         `json:"ErrNum"`         // http status code
+	ErrMsg string      `json:"ErrMsg"`         // return message if failed
+	Data   interface{} `json:"Data,omitempty"` // return data if success
 
 	Render func(w http.ResponseWriter, req *http.Request, res *Result) `json:"-"`
-
-	ErrorDetail string `json:"-"` // detail error msg, presents in access log not response
 }
 
 // Error error interface
@@ -157,7 +144,6 @@ func (res *Result) parseError() {
 	if rr.Msg != "" {
 		res.ErrMsg += (": " + rr.Msg)
 	}
-	res.ErrorDetail = rr.FullMsg()
 }
 
 func (res *Result) IsSucc() bool {
@@ -191,10 +177,6 @@ func Render(w http.ResponseWriter, req *http.Request, res *Result) {
 	_, requestInfo := InitRequestInfo(req.Context(), req)
 	requestInfo.RetMsg = res.ErrMsg
 
-	if stateful.DefaultConfig.RunTime.Debug {
-		requestInfo.ErrDetail = res.ErrorDetail
-	}
-
 	if !isSucc {
 		res.ErrMsg = stateful.TryMappingErrMsg(req, res.ErrMsg)
 	}
@@ -204,7 +186,7 @@ func Render(w http.ResponseWriter, req *http.Request, res *Result) {
 	case 200 <= res.Code && res.Code < 300:
 		res.Code = http.StatusOK
 	case 400 <= res.Code && res.Code < 500:
-	case res.Code == 555 || res.Code == 556:
+	case res.Code == 555:
 	// case 300 <= res.Code && res.Code < 400:
 	// case 500 <= res.Code && res.Code < 600:
 	// dont change code value

@@ -36,7 +36,7 @@ type UpdateParam struct {
 // UpdateRoute route
 // AUTO GEN BY ctrl, MODIFY AS U NEED
 var UpdateEndpoint = &xreq.Endpoint{
-	Path:       "/products/{product_name}/sub_clusters/{sub_cluster_name}",
+	Path:       "/products/{product_name}/sub-clusters/{sub_cluster_name}",
 	Method:     http.MethodPatch,
 	Handler:    xreq.Convert(UpdateAction),
 	Authorizer: iauth.FAP(iauth.FeatureSubCluster, iauth.ActionUpdate),

@@ -20,18 +20,26 @@ var Endpoints = []*xreq.Endpoint{
 	SessionKeyByPasswordEndpoint,
 	SessionKeyDestroyEndpoint,
 
+	TokenCreateEndpoint,
+	TokenDestroyEndpoint,
+	TokenListEndpoint,
+
+	TokenListEndpoint,
+	TokenOneEndpoint,
+	TokenCreateEndpoint,
+	TokenDestroyEndpoint,
+	ProductTokenListEndpoint,
+
 	UserCreateEndpoint,
 	UserDeleteEndpoint,
 	UserListEndpoint,
-	InnerUserListEndpoint,
-	SessionKeyByInnerEndpoint,
-
-	ProdcutUserCreateEndpoint,
-	ProdcutUserDeleteEndpoint,
-	ProdcutUserListEndpoint,
-
+	UserOneEndpoint,
+	UserUpdateIsAdminEndpoint,
 	UserUpdatePasswordEndpoint,
-	UserUpdateSelfPasswordEndpoint,
+
+	ProductUserBindEndpoint,
+	ProductUserBindListEndpoint,
+	ProductUserUnbindEndpoint,
 
 	NavigationEndpoint,
 }

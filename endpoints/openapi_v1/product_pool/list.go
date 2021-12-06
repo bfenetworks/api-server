@@ -26,7 +26,7 @@ import (
 // ListRoute route
 // AUTO GEN BY ctrl, MODIFY AS U NEED
 var ListEndpoint = &xreq.Endpoint{
-	Path:       "/products/{product_name}/instance_pools",
+	Path:       "/products/{product_name}/instance-pools",
 	Method:     http.MethodGet,
 	Handler:    xreq.Convert(ListAction),
 	Authorizer: iauth.FAP(iauth.FeatureProductPool, iauth.ActionRead),

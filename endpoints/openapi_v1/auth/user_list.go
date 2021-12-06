@@ -31,15 +31,15 @@ var UserListEndpoint = &xreq.Endpoint{
 	Authorizer: iauth.FA(iauth.FeatureUser, iauth.ActionReadAll),
 }
 
-func userListActionProcess(req *http.Request) ([]*UserIdentifyData, error) {
-	list, err := container.AuthenticateManager.FetchNormalUserList(req.Context(), nil)
+func userListActionProcess(req *http.Request) ([]*UserData, error) {
+	list, err := container.AuthenticateManager.FetchUserList(req.Context(), nil)
 	if err != nil {
 		return nil, err
 	}
 
-	users := []*UserIdentifyData{}
+	users := []*UserData{}
 	for _, one := range list {
-		users = append(users, newUserIdentifyData(one, false))
+		users = append(users, newUserData(one))
 	}
 
 	return users, nil

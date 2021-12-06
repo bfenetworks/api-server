@@ -36,7 +36,7 @@ type DbConfig struct {
 }
 
 func NewDB(dbConfig *DbConfig) (*sql.DB, error) {
-	db, err := sql.Open("mysql", dbConfig.FormatDSN())
+	db, err := sql.Open(dbConfig.Driver, dbConfig.FormatDSN())
 	if err != nil {
 		return nil, err
 	}

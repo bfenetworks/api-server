@@ -28,7 +28,6 @@ CREATE TABLE `products` (
   `mail_list` varchar(4096) NOT NULL ,
   `contact_person` varchar(4096) NOT NULL ,
   `sms_list` varchar(4096) NOT NULL DEFAULT "no sms" ,
-  `gtc_priority` int NOT NULL DEFAULT 1,
   `description` varchar(1024) NOT NULL DEFAULT "no desc" ,
   `created_at` datetime NOT NULL ,
   `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP ,
@@ -189,33 +188,6 @@ CREATE TABLE `route_cases` (
   INDEX `product_id` (`product_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-
--- create users
-DROP TABLE IF EXISTS `users`;
-CREATE TABLE `users` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) NOT NULL,
-  `password` varchar(255) NOT NULL DEFAULT '',
-  `session_key` varchar(20) NOT NULL DEFAULT '',
-  `session_key_created_at` datetime NOT NULL DEFAULT '0000-01-01 00:00:00',
-  `roles` varchar(2048) NOT NULL DEFAULT '',
-  `created_at` datetime NOT NULL,
-  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `name_uni` (`name`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
--- create user_products
-DROP TABLE IF EXISTS `user_products`;
-CREATE TABLE `user_products` (
-  `user_id` bigint(20) NOT NULL,
-  `product_id` bigint(20) NOT NULL,
-  `created_at` datetime NOT NULL,
-  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`user_id`, `product_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-
 -- create certificates
 DROP TABLE IF EXISTS `certificates`;
 CREATE TABLE `certificates` (
@@ -251,7 +223,6 @@ CREATE TABLE `extra_files` (
   INDEX `product_id` (`product_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-
 DROP TABLE IF EXISTS `config_versions`;
 CREATE TABLE `config_versions` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
@@ -264,6 +235,33 @@ CREATE TABLE `config_versions` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
-insert into users (id, name, roles, password, created_at) values(1, 'admin', 'admin', 'admin', now());
-insert into products (id, name, `description`,                      mail_list,      contact_person, created_at) values
-                     (1, 'BFE', 'Build-in Product, User by Admin', 'bfe@baidu.com', 'bfe',          now());
+-- create users
+DROP TABLE IF EXISTS `users`;
+CREATE TABLE `users` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  `type` tinyint(1) NOT NULL DEFAULT '0',
+  `password` varchar(255) NOT NULL DEFAULT '',
+  `ticket` varchar(20) NOT NULL DEFAULT '',
+  `ticket_created_at` datetime NOT NULL DEFAULT '0000-01-01 00:00:00',
+  `scopes` varchar(2048) NOT NULL DEFAULT '',
+  `created_at` datetime NOT NULL,
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `name_uni` (`name`, `type`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- create user_products
+DROP TABLE IF EXISTS `user_products`;
+CREATE TABLE `user_products` (
+  `user_id` bigint(20) NOT NULL,
+  `product_id` bigint(20) NOT NULL,
+  `created_at` datetime NOT NULL,
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`user_id`, `product_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+insert into users (id, name, password, scopes, created_at) values(1, 'admin', 'admin', 'System', now());
+insert into products (id, name, `description`,                              mail_list,       contact_person, created_at) values
+                     (1, 'BFE', 'Build-in Product, User by System Manager', 'bfe@cncf.com', 'bfe',          now());

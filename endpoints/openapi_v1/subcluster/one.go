@@ -33,8 +33,6 @@ type OneData struct {
 	Description  string `json:"description" uri:"description"`
 	Ready        bool   `json:"ready" uri:"ready"`
 	ProductName  string `json:"product_name,omitempty"`
-
-	Tag int8 `json:"tag"`
 }
 
 // OneParam Request Param
@@ -46,7 +44,7 @@ type OneParam struct {
 // OneRoute route
 // AUTO GEN BY ctrl, MODIFY AS U NEED
 var OneEndpoint = &xreq.Endpoint{
-	Path:       "/products/{product_name}/sub_clusters/{sub_cluster_name}",
+	Path:       "/products/{product_name}/sub-clusters/{sub_cluster_name}",
 	Method:     http.MethodGet,
 	Handler:    xreq.Convert(OneAction),
 	Authorizer: iauth.FAP(iauth.FeatureSubCluster, iauth.ActionRead),
@@ -107,7 +105,6 @@ func newOneData(sc *icluster_conf.SubCluster) *OneData {
 		Description: sc.Description,
 		Ready:       sc.Ready,
 		ProductName: sc.ProductName,
-		Tag:         sc.Tag,
 	}
 
 	if sc.InstancePool != nil {

@@ -28,7 +28,7 @@ import (
 // DeleteRoute route
 // AUTO GEN BY ctrl, MODIFY AS U NEED
 var DeleteEndpoint = &xreq.Endpoint{
-	Path:       "/products/{product_name}/sub_clusters/{sub_cluster_name}",
+	Path:       "/products/{product_name}/sub-clusters/{sub_cluster_name}",
 	Method:     http.MethodDelete,
 	Handler:    xreq.Convert(DeleteAction),
 	Authorizer: iauth.FAP(iauth.FeatureSubCluster, iauth.ActionDelete),

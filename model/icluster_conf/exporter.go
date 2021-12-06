@@ -123,12 +123,12 @@ func (rm *ClusterManager) gslbConfGenerator(bfeClusterName string) func(ctx cont
 
 		gslbClustersConf := gslb_conf.GslbClustersConf{}
 		for _, cluster := range clusters {
-			manualScheduler := cluster.ManualScheduler
-			if len(manualScheduler) == 0 {
+			scheduler := cluster.Scheduler
+			if len(scheduler) == 0 {
 				continue
 			}
 
-			lbMatraix := manualScheduler[bfeClusterName]
+			lbMatraix := scheduler[bfeClusterName]
 			if lbMatraix == nil {
 				return nil, xerror.WrapParamErrorWithMsg("BFECluster %s Not Exist", bfeClusterName)
 			}

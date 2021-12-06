@@ -17,6 +17,7 @@ package auth
 import (
 	"net/http"
 
+	"github.com/bfenetworks/api-server/lib/xerror"
 	"github.com/bfenetworks/api-server/lib/xreq"
 	"github.com/bfenetworks/api-server/model/iauth"
 	"github.com/bfenetworks/api-server/stateful/container"
@@ -34,8 +35,9 @@ var UserUpdatePasswordEndpoint = &xreq.Endpoint{
 // UserUpdatePasswordParam Request Param
 // AUTO GEN BY ctrl, MODIFY AS U NEED
 type UserUpdatePasswordParam struct {
-	UserName *string `uri:"user_name" validate:"required,min=1"`
-	Password *string `json:"password" validate:"required,min=6"`
+	UserName    *string `uri:"user_name" validate:"required,min=1"`
+	OldPassword string  `json:"old_password" validate:"omitempty"`
+	Password    *string `json:"password" validate:"required,min=6"`
 }
 
 // AUTO GEN BY ctrl, MODIFY AS U NEED
@@ -46,9 +48,21 @@ func newUserUpdatePasswordParam(req *http.Request) (*UserUpdatePasswordParam, er
 }
 
 func userUpdatePasswordActionProcess(req *http.Request, param *UserUpdatePasswordParam) error {
+	user, err := iauth.MustGetVistor(req.Context())
+	if err != nil {
+		return err
+	}
+
+	if user.GetName() == *param.UserName {
+		if param.OldPassword == "" {
+			return xerror.WrapParamErrorWithMsg("Want Old Password")
+		}
+	}
+
 	return container.AuthenticateManager.UpdateUserPassword(req.Context(), &iauth.PasswordChangeData{
-		UserName: *param.UserName,
-		Password: *param.Password,
+		UserName:    *param.UserName,
+		OldPassword: param.OldPassword,
+		Password:    *param.Password,
 	})
 }
 

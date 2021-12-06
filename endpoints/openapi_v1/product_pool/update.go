@@ -28,7 +28,7 @@ import (
 // UpdateRoute route
 // AUTO GEN BY ctrl, MODIFY AS U NEED
 var UpdateEndpoint = &xreq.Endpoint{
-	Path:       "/products/{product_name}/instance_pools/{instance_pool_name}",
+	Path:       "/products/{product_name}/instance-pools/{instance_pool_name}",
 	Method:     http.MethodPatch,
 	Handler:    xreq.Convert(UpdateAction),
 	Authorizer: iauth.FAP(iauth.FeatureProductPool, iauth.ActionUpdate),

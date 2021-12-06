@@ -101,7 +101,7 @@ type ClusterData struct {
 
 	SubClusters []string `json:"sub_clusters"`
 
-	ManualScheduler map[string]map[string]int `json:"manual_scheduler,omitempty"`
+	Scheduler map[string]map[string]int `json:"scheduler,omitempty"`
 }
 
 type AutoLbMatrix struct {
@@ -151,7 +151,7 @@ func clusterModel2Control(cluster *icluster_conf.Cluster) *ClusterData {
 
 		SubClusters: cluster.SubClusterNames(),
 
-		ManualScheduler: cluster.ManualScheduler,
+		Scheduler: cluster.Scheduler,
 
 		PassiveHealthCheck: PassiveHealthCheckM2C(cluster.PassiveHealthCheck),
 	}

@@ -37,8 +37,6 @@ type SubCluster struct {
 	Enabled     bool
 	Ready       bool
 	Description string
-
-	Tag int8
 }
 
 type SubClusterFilter struct {

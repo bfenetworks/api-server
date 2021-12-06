@@ -36,7 +36,7 @@ type BindSubCluster struct {
 // BindSubClusterRoute route
 // AUTO GEN BY ctrl, MODIFY AS U NEED
 var BindSubClusterEndpoint = &xreq.Endpoint{
-	Path:       "/products/{product_name}/clusters/{cluster_name}/sub_clusters",
+	Path:       "/products/{product_name}/clusters/{cluster_name}/sub-clusters",
 	Method:     http.MethodPatch,
 	Handler:    xreq.Convert(BindSubClusterAction),
 	Authorizer: iauth.FAP(iauth.FeatureProductCluster, iauth.ActionUpdate),

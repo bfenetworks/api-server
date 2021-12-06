@@ -65,6 +65,7 @@ type TUserProductParam struct {
 	// IDs              []int64     `db:"id,in"`
 
 	UserID    *int64     `db:"user_id"`
+	UserIDs   []int64    `db:"user_id,in"`
 	ProductID *int64     `db:"product_id"`
 	CreatedAt *time.Time `db:"created_at"`
 	UpdatedAt *time.Time `db:"updated_at"`

@@ -20,40 +20,49 @@ import (
 	"github.com/bfenetworks/api-server/lib/xerror"
 	"github.com/bfenetworks/api-server/lib/xreq"
 	"github.com/bfenetworks/api-server/model/iauth"
+	"github.com/bfenetworks/api-server/model/ibasic"
 	"github.com/bfenetworks/api-server/stateful/container"
 )
 
-// ProdcutUserCreateRoute route
+// ProductUserUnbindRoute route
 // AUTO GEN BY ctrl, MODIFY AS U NEED
-var ProdcutUserCreateEndpoint = &xreq.Endpoint{
-	Path:       "/auth/products/{product_name}/users/{user_name}",
-	Method:     http.MethodPost,
-	Handler:    xreq.Convert(ProdcutUserCreateAction),
-	Authorizer: iauth.FA(iauth.FeatureProductUser, iauth.ActionCreate),
+var ProductUserUnbindEndpoint = &xreq.Endpoint{
+	Path:       "/auth/users/{user_name}/products/{product_name}",
+	Method:     http.MethodDelete,
+	Handler:    xreq.Convert(ProductUserUnbindAction),
+	Authorizer: iauth.FA(iauth.FeatureProductUser, iauth.ActionDelete),
 }
 
-func productUserCreateActionProcess(req *http.Request, param *UserNameParam) error {
-	user, err := container.AuthenticateManager.FetchUser(req.Context(), *param.UserName)
+func productUserUnbindActionProcess(req *http.Request, param *UserNameParam) error {
+	user, err := container.AuthenticateManager.FetchUser(req.Context(), &iauth.UserFilter{
+		Name: param.UserName,
+		Type: &iauth.UserTypeNormal,
+	})
+	if err != nil {
+		return err
+	}
+
+	product, err := ibasic.MustGetProduct(req.Context())
 	if err != nil {
 		return err
 	}
 
 	if user == nil {
-		return xerror.WrapModelErrorWithMsg("User Not Exist")
+		return xerror.WrapRecordNotExist("User")
 	}
 
-	return container.ProductAuthorizateManager.Grant(req.Context(), user)
+	return container.AuthorizeManager.UnBindUserProduct(req.Context(), user, product)
 }
 
-var _ xreq.Handler = ProdcutUserCreateAction
+var _ xreq.Handler = ProductUserUnbindAction
 
-// ProdcutUserCreateAction action
+// ProductUserUnbindAction action
 // AUTO GEN BY ctrl, MODIFY AS U NEED
-func ProdcutUserCreateAction(req *http.Request) (interface{}, error) {
+func ProductUserUnbindAction(req *http.Request) (interface{}, error) {
 	param, err := newUserNameParam(req)
 	if err != nil {
 		return nil, err
 	}
 
-	return nil, productUserCreateActionProcess(req, param)
+	return nil, productUserUnbindActionProcess(req, param)
 }

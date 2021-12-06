@@ -27,7 +27,7 @@ import (
 // ListRoute route
 // AUTO GEN BY ctrl, MODIFY AS U NEED
 var ListEndpoint = &xreq.Endpoint{
-	Path:       "/products/{product_name}/sub_clusters",
+	Path:       "/products/{product_name}/sub-clusters",
 	Method:     http.MethodGet,
 	Handler:    xreq.Convert(ListAction),
 	Authorizer: iauth.FAP(iauth.FeatureSubCluster, iauth.ActionRead),

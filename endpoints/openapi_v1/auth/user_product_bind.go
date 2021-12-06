@@ -20,40 +20,49 @@ import (
 	"github.com/bfenetworks/api-server/lib/xerror"
 	"github.com/bfenetworks/api-server/lib/xreq"
 	"github.com/bfenetworks/api-server/model/iauth"
+	"github.com/bfenetworks/api-server/model/ibasic"
 	"github.com/bfenetworks/api-server/stateful/container"
 )
 
-// ProdcutUserDeleteRoute route
+// ProductUserCreateRoute route
 // AUTO GEN BY ctrl, MODIFY AS U NEED
-var ProdcutUserDeleteEndpoint = &xreq.Endpoint{
-	Path:       "/auth/products/{product_name}/users/{user_name}",
-	Method:     http.MethodDelete,
-	Handler:    xreq.Convert(ProdcutUserDeleteAction),
-	Authorizer: iauth.FA(iauth.FeatureProductUser, iauth.ActionDelete),
+var ProductUserBindEndpoint = &xreq.Endpoint{
+	Path:       "/auth/users/{user_name}/products/{product_name}",
+	Method:     http.MethodPost,
+	Handler:    xreq.Convert(ProductUserBindAction),
+	Authorizer: iauth.FA(iauth.FeatureProductUser, iauth.ActionCreate),
 }
 
-func productUserDeleteActionProcess(req *http.Request, param *UserNameParam) error {
-	user, err := container.AuthenticateManager.FetchUser(req.Context(), *param.UserName)
+func productUserBindActionProcess(req *http.Request, param *UserNameParam) error {
+	user, err := container.AuthenticateManager.FetchUser(req.Context(), &iauth.UserFilter{
+		Name: param.UserName,
+		Type: &iauth.UserTypeNormal,
+	})
+	if err != nil {
+		return err
+	}
+
+	product, err := ibasic.MustGetProduct(req.Context())
 	if err != nil {
 		return err
 	}
 
 	if user == nil {
-		return xerror.WrapModelErrorWithMsg("User Not Existed")
+		return xerror.WrapRecordNotExist("User")
 	}
 
-	return container.ProductAuthorizateManager.Revoke(req.Context(), user)
+	return container.AuthorizeManager.BindUserProduct(req.Context(), user, product)
 }
 
-var _ xreq.Handler = ProdcutUserDeleteAction
+var _ xreq.Handler = ProductUserBindAction
 
-// ProdcutUserDeleteAction action
+// ProductUserBindAction action
 // AUTO GEN BY ctrl, MODIFY AS U NEED
-func ProdcutUserDeleteAction(req *http.Request) (interface{}, error) {
+func ProductUserBindAction(req *http.Request) (interface{}, error) {
 	param, err := newUserNameParam(req)
 	if err != nil {
 		return nil, err
 	}
 
-	return nil, productUserDeleteActionProcess(req, param)
+	return nil, productUserBindActionProcess(req, param)
 }

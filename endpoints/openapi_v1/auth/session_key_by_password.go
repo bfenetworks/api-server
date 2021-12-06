@@ -22,14 +22,6 @@ import (
 	"github.com/bfenetworks/api-server/stateful/container"
 )
 
-// UserIdentifyData Request Param
-// AUTO GEN BY ctrl, MODIFY AS U NEED
-type UserIdentifyData struct {
-	UserName   string   `json:"user_name,omitempty" uri:"user_name"`
-	SessionKey string   `json:"session_key,omitempty" uri:"session_key"`
-	Roles      []string `json:"roles,omitempty" uri:"roles"`
-}
-
 // UserNamePasswordParam Request Param
 // AUTO GEN BY ctrl, MODIFY AS U NEED
 type UserNamePasswordParam struct {
@@ -40,7 +32,7 @@ type UserNamePasswordParam struct {
 // SessionKeyByPasswordRoute route
 // AUTO GEN BY ctrl, MODIFY AS U NEED
 var SessionKeyByPasswordEndpoint = &xreq.Endpoint{
-	Path:       "/auth/session-keys/password",
+	Path:       "/auth/session-keys",
 	Method:     http.MethodPost,
 	Handler:    xreq.Convert(SessionKeyByPasswordAction),
 	Authorizer: nil,
@@ -53,8 +45,8 @@ func newUserNamePasswordParam4SessionKeyByPassword(req *http.Request) (*UserName
 	return userNamePasswordParam, err
 }
 
-func sessionKeyByPasswordActionProcess(req *http.Request, param *UserNamePasswordParam) (*UserIdentifyData, error) {
-	user, err := container.AuthenticateManager.Authenticate(req.Context(), &iauth.AuthenticateParam{
+func sessionKeyByPasswordActionProcess(req *http.Request, param *UserNamePasswordParam) (*UserData, error) {
+	v, err := container.AuthenticateManager.Authenticate(req.Context(), &iauth.AuthenticateParam{
 		Type:     iauth.AuthTypePassword,
 		Identify: *param.UserName,
 		Extend:   *param.Password,
@@ -63,7 +55,10 @@ func sessionKeyByPasswordActionProcess(req *http.Request, param *UserNamePasswor
 		return nil, err
 	}
 
-	return newUserIdentifyData(user, true), nil
+	userData := newUserData(v.User)
+	userData.SessionKey = v.User.SessionKey
+
+	return userData, nil
 }
 
 var _ xreq.Handler = SessionKeyByPasswordAction
@@ -77,21 +72,4 @@ func SessionKeyByPasswordAction(req *http.Request) (interface{}, error) {
 	}
 
 	return sessionKeyByPasswordActionProcess(req, userNamePasswordParam)
-}
-
-func newUserIdentifyData(user *iauth.User, withSessionKey bool) *UserIdentifyData {
-	roles := []string{}
-	for _, one := range user.Roles {
-		roles = append(roles, one.Name)
-	}
-
-	data := &UserIdentifyData{
-		UserName: user.Name,
-		Roles:    roles,
-	}
-	if withSessionKey {
-		data.SessionKey = user.SessionKey
-	}
-
-	return data
 }

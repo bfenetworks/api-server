@@ -54,7 +54,10 @@ func Init() {
 		container.SubClusterStoragerSingleton)
 	container.CertificateStoragerSingleton = protocol.NewCertificateStorager(stateful.NewBFEDBContext)
 	container.AuthenticateStoragerSingleton = auth.NewAuthenticateStorager(stateful.NewBFEDBContext)
-	container.ProductAuthorizateStoragerSingleton = auth.NewProductAuthorizateStorager(stateful.NewBFEDBContext)
+	container.AuthorizeStoragerSingleton = auth.NewAuthorizeStorager(stateful.NewBFEDBContext,
+		container.ProductStoragerSingleton,
+		container.AuthenticateStoragerSingleton,
+	)
 	container.DomainStoragerSingleton = route_conf.NewDomainStorager(stateful.NewBFEDBContext)
 	container.ExtraFileStoragerSingleton = basic.NewRDBExtraFileStorager(stateful.NewBFEDBContext)
 
@@ -110,11 +113,11 @@ func Init() {
 	container.AuthenticateManager = iauth.NewAuthenticateManager(
 		container.TxnStoragerSingleton,
 		container.AuthenticateStoragerSingleton,
+		container.AuthorizeStoragerSingleton,
 	)
-	container.ProductAuthorizateManager = iauth.NewProductAuthorizateManager(
-		container.ProductAuthorizateStoragerSingleton)
-
-	iauth.DefaultProductAuthorizateManager = container.ProductAuthorizateManager
+	container.AuthorizeManager = iauth.NewAuthorizeManager(
+		container.TxnStoragerSingleton,
+		container.AuthorizeStoragerSingleton)
 
 	container.PoolManager = icluster_conf.NewPoolManager(
 		container.TxnStoragerSingleton,

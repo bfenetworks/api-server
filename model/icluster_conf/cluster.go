@@ -118,7 +118,7 @@ type ClusterParam struct {
 
 	SubClusters []string
 
-	ManualScheduler map[string]map[string]int
+	Scheduler map[string]map[string]int
 
 	PassiveHealthCheck *ClusterPassiveHealthCheckParam
 }
@@ -199,7 +199,7 @@ type Cluster struct {
 	Basic              *ClusterBasic
 	StickySessions     *ClusterStickySessions
 	SubClusters        []*SubCluster
-	ManualScheduler    map[string]map[string]int
+	Scheduler          map[string]map[string]int
 	PassiveHealthCheck *ClusterPassiveHealthCheck
 }
 
@@ -322,8 +322,8 @@ func (cm *ClusterManager) CreateCluster(ctx context.Context, product *ibasic.Pro
 			return err
 		}
 
-		if param.ManualScheduler == nil {
-			if param.ManualScheduler, err = cm.constructDefaultManualLB(ctx, bindingSubClusters); err != nil {
+		if param.Scheduler == nil {
+			if param.Scheduler, err = cm.constructDefaultScheduler(ctx, bindingSubClusters); err != nil {
 				return err
 			}
 		}
@@ -343,7 +343,7 @@ func (cm *ClusterManager) CreateCluster(ctx context.Context, product *ibasic.Pro
 
 const BlackHole = "GSLB_BLACKHOLE"
 
-func (cm *ClusterManager) constructDefaultManualLB(ctx context.Context, subClusters []*SubCluster) (map[string]map[string]int, error) {
+func (cm *ClusterManager) constructDefaultScheduler(ctx context.Context, subClusters []*SubCluster) (map[string]map[string]int, error) {
 	bfeClusters, err := cm.bfeClusterStorager.FetchBFEClusters(ctx, nil)
 	if err != nil {
 		return nil, err
@@ -368,7 +368,7 @@ func (cm *ClusterManager) constructDefaultManualLB(ctx context.Context, subClust
 }
 
 func (cm *ClusterManager) checkManualLB(ctx context.Context, old *Cluster, param *ClusterParam) error {
-	if param.ManualScheduler == nil {
+	if param.Scheduler == nil {
 		return nil
 	}
 
@@ -377,7 +377,7 @@ func (cm *ClusterManager) checkManualLB(ctx context.Context, old *Cluster, param
 		return err
 	}
 
-	lbMatrix := param.ManualScheduler
+	lbMatrix := param.Scheduler
 	if len(bfeClusters) != len(lbMatrix) {
 		return xerror.WrapParamErrorWithMsg("LbMatrix Config Illegal, Want All BFE Cluster Exist")
 	}
@@ -465,7 +465,7 @@ func (cm *ClusterManager) checkLbMatrix(cluster *Cluster, unbindSubClusters, app
 	unbindSubClusterMap := lib.StringSlice2Map(unbindSubClusters)
 	newManualLbMatrix := map[string]map[string]int{}
 
-	for bfeCluster, subClusterRate := range cluster.ManualScheduler {
+	for bfeCluster, subClusterRate := range cluster.Scheduler {
 		newManualLbMatrix[bfeCluster] = map[string]int{}
 		for subClusterName, rate := range subClusterRate {
 			if unbindSubClusterMap[subClusterName] {
@@ -515,7 +515,7 @@ func (cm *ClusterManager) RebindSubCluster(ctx context.Context, product *ibasic.
 
 		if manualLbMatrix != nil {
 			if err := cm.storager.ClusterUpdate(ctx, product, cluster, &ClusterParam{
-				ManualScheduler: manualLbMatrix,
+				Scheduler: manualLbMatrix,
 			}); err != nil {
 				return err
 			}

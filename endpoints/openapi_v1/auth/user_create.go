@@ -17,6 +17,8 @@ package auth
 import (
 	"net/http"
 
+	"github.com/bfenetworks/api-server/lib"
+	"github.com/bfenetworks/api-server/lib/xerror"
 	"github.com/bfenetworks/api-server/lib/xreq"
 	"github.com/bfenetworks/api-server/model/iauth"
 	"github.com/bfenetworks/api-server/stateful/container"
@@ -25,9 +27,10 @@ import (
 // UserCreateParam Request Param
 // AUTO GEN BY ctrl, MODIFY AS U NEED
 type UserCreateParam struct {
-	UserName *string  `json:"user_name" uri:"user_name" validate:"required,min=1"`
-	Password *string  `json:"password" uri:"password" validate:"required,min=6"`
-	Roles    []string `json:"roles" uri:"roles" validate:"min=1"`
+	UserName *string `json:"user_name" uri:"user_name" validate:"required,min=1"`
+	Password *string `json:"password" uri:"password"`
+	IsAdmin  bool    `json:"is_admin" uri:"is_admin"`
+	Type     string  `json:"type" uri:"password" validate:"required,oneof=jwt normal"`
 }
 
 // UserCreateRoute route
@@ -41,21 +44,24 @@ var UserCreateEndpoint = &xreq.Endpoint{
 
 // AUTO GEN BY ctrl, MODIFY AS U NEED
 func newUserCreateParam(req *http.Request) (*UserCreateParam, error) {
-	codeLoginParam := &UserCreateParam{}
-	err := xreq.BindJSON(req, codeLoginParam)
-	return codeLoginParam, err
+	param := &UserCreateParam{
+		Type: "normal",
+	}
+	err := xreq.BindJSON(req, param)
+	return param, err
 }
 
 func userCreateActionProcess(req *http.Request, param *UserCreateParam) error {
-	roles, err := iauth.RoleList(param.Roles)
-	if err != nil {
-		return err
+	scope := iauth.ScopeSystem
+	if !param.IsAdmin {
+		scope = iauth.ScopeProduct
 	}
 
 	return container.AuthenticateManager.CreateUser(req.Context(), &iauth.UserParam{
 		Name:     param.UserName,
 		Password: param.Password,
-		Roles:    roles,
+		Scopes:   []string{scope},
+		Type:     lib.PInt8(typeStr2Int[param.Type]),
 	})
 }
 
@@ -67,6 +73,12 @@ func UserCreateAction(req *http.Request) (interface{}, error) {
 	param, err := newUserCreateParam(req)
 	if err != nil {
 		return nil, err
+	}
+
+	if param.Type == "normal" {
+		if param.Password == nil {
+			return nil, xerror.WrapParamErrorWithMsg("Password Must Set When Type Is normal")
+		}
 	}
 
 	return nil, userCreateActionProcess(req, param)

@@ -64,7 +64,7 @@ func queryList(dbCtx lib.DBContexter, table string, where interface{}, rst inter
 
 	record.Err = scanner.Scan(rows, rst)
 	if record.Err == scanner.ErrEmptyResult {
-		return xerror.WrapDaoError(nil)
+		return ErrRecordNotFound
 	}
 	return xerror.WrapDaoError(record.Err)
 }

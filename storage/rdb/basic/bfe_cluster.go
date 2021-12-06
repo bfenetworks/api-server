@@ -110,7 +110,7 @@ func (ps *RDBBFEClusterStorager) CreateBFECluster(ctx context.Context, pp *ibasi
 		return err
 	}
 	if pool == nil {
-		return xerror.WrapParamErrorWithMsg("Pool %s Not Existed", *pp.Pool)
+		return xerror.WrapParamErrorWithMsg("Pool %s Not Exist", *pp.Pool)
 	}
 
 	_, err = dao.TBfeClusterCreate(dbCtx, &dao.TBfeClusterParam{

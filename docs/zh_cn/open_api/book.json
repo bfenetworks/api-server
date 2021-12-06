@@ -1,0 +1,28 @@
+{
+    "author": "bfe-beyond@baidu.com",
+    "title": "BFE Open API",
+    "links": {
+        "sidebar": {
+            "Home": "https://bfe-networks.net"
+        }
+    },
+    "plugins": [
+        "-sharing",
+        "splitter",
+        "page-toc-button",
+        "search-pro",
+        "hide-element"
+    ],
+    "pluginsConfig": {
+        "page-toc-button": {
+            "maxTocDepth": 2,
+            "minTocSize": 2
+        },
+        "hide-element": {
+            "elements": [
+                ".gitbook-link",
+                ".copyright"
+            ]
+        }
+    }
+}

@@ -134,7 +134,7 @@ func (rs *RouteRuleStorager) FetchRoutRules(ctx context.Context, products []*iba
 
 		cluster := clusterMap[one.ClusterID]
 		if cluster == nil {
-			return nil, xerror.WrapDirtyDataErrorWithMsg("Cluster %d Not Existed", one.ClusterID)
+			continue
 		}
 		basicRule, err := newRouteBasicRule(one, cluster)
 		if err != nil {

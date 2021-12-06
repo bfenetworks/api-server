@@ -28,27 +28,14 @@ const tProductTableName = "products"
 
 // TProduct Query Result
 type TProduct struct {
-	Id              int64     `db:"id"`
-	Name            string    `db:"name"`
-	NoahId          int64     `db:"noah_id"`
-	NoahPath        string    `db:"noah_path"`
-	PdbId           int64     `db:"pdb_id"`
-	PdbPath         string    `db:"pdb_path"`
-	MailList        string    `db:"mail_list"`
-	Owner           string    `db:"owner"`
-	IamAccountId    string    `db:"iam_account_id"`
-	ContactPerson   string    `db:"contact_person"`
-	SmsList         string    `db:"sms_list"`
-	GtcPriority     int32     `db:"gtc_priority"`
-	RouteConfigId   int64     `db:"route_config_id"`
-	Description     string    `db:"description"`
-	IsInner         bool      `db:"is_inner"`
-	IsRdqaTest      bool      `db:"is_rdqa_test"`
-	ExpiredDate     string    `db:"expired_date"`
-	IsOffline       bool      `db:"is_offline"`
-	IsInternational bool      `db:"is_international"`
-	CreatedAt       time.Time `db:"created_at"`
-	UpdatedAt       time.Time `db:"updated_at"`
+	Id            int64     `db:"id"`
+	Name          string    `db:"name"`
+	MailList      string    `db:"mail_list"`
+	ContactPerson string    `db:"contact_person"`
+	SmsList       string    `db:"sms_list"`
+	Description   string    `db:"description"`
+	CreatedAt     time.Time `db:"created_at"`
+	UpdatedAt     time.Time `db:"updated_at"`
 }
 
 // TProductOne Query One
@@ -82,29 +69,17 @@ func TProductList(dbCtx lib.DBContexter, where *TProductParam) ([]*TProduct, err
 type TProductParam struct {
 	// Ids              []int64     `db:"id,in"`
 
-	Id              *int64     `db:"id"`
-	IDs             []int64    `db:"id,in"`
-	NeId            *int64     `db:"id,!="`
-	Name            *string    `db:"name"`
-	NoahId          *int64     `db:"noah_id"`
-	NoahPath        *string    `db:"noah_path"`
-	PdbId           *int64     `db:"pdb_id"`
-	PdbPath         *string    `db:"pdb_path"`
-	MailList        *string    `db:"mail_list"`
-	Owner           *string    `db:"owner"`
-	IamAccountId    *string    `db:"iam_account_id"`
-	ContactPerson   *string    `db:"contact_person"`
-	SmsList         *string    `db:"sms_list"`
-	GtcPriority     *int32     `db:"gtc_priority"`
-	RouteConfigId   *int64     `db:"route_config_id"`
-	Description     *string    `db:"description"`
-	IsInner         *bool      `db:"is_inner"`
-	IsRdqaTest      *bool      `db:"is_rdqa_test"`
-	ExpiredDate     *string    `db:"expired_date"`
-	IsOffline       *bool      `db:"is_offline"`
-	IsInternational *bool      `db:"is_international"`
-	CreatedAt       *time.Time `db:"created_at"`
-	UpdatedAt       *time.Time `db:"updated_at"`
+	Id            *int64     `db:"id"`
+	Name          *string    `db:"name"`
+	MailList      *string    `db:"mail_list"`
+	ContactPerson *string    `db:"contact_person"`
+	SmsList       *string    `db:"sms_list"`
+	Description   *string    `db:"description"`
+	CreatedAt     *time.Time `db:"created_at"`
+	UpdatedAt     *time.Time `db:"updated_at"`
+
+	IDs  []int64 `db:"id,in"`
+	NeId *int64  `db:"id,!="`
 
 	OrderBy *string `db:"_orderby"`
 }

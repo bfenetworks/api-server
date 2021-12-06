@@ -88,26 +88,33 @@ func ProductListAction(req *http.Request) (interface{}, error) {
 		productID = &(clusterObj.ProductID)
 	}
 
-	user, err := iauth.MustGetUser(req.Context())
+	vistor, err := iauth.MustGetVistor(req.Context())
 	if err != nil {
 		return nil, err
 	}
 
-	var ids []int64
-	if !user.IsAdmin() {
-		ids, err = container.ProductAuthorizateManager.FetchProducts(req.Context(), user)
+	var grantedProducts []*ibasic.Product
+	if !vistor.IsAdmin() {
+		grantedProducts, err = container.AuthorizeManager.FetchVistorProductList(req.Context(), vistor)
 		if err != nil {
 			return nil, err
 		}
-		if len(ids) == 0 {
+		if len(grantedProducts) == 0 {
 			return []*ProductData{}, nil
 		}
+
+		for _, pp := range grantedProducts {
+			if productID == nil || *productID == pp.ID {
+				rst = append(rst, newProductData(pp))
+			}
+		}
+
+		return rst, nil
 	}
 
 	list, err := container.ProductManager.FetchProducts(req.Context(), &ibasic.ProductFilter{
 		ID:   productID,
 		NeID: lib.PInt64(1),
-		IDs:  ids,
 	})
 	if err != nil {
 		return nil, err

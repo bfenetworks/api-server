@@ -69,7 +69,7 @@ func NewOneData(pool *icluster_conf.Pool) *OneData {
 // OneRoute route
 // AUTO GEN BY ctrl, MODIFY AS U NEED
 var OneEndpoint = &xreq.Endpoint{
-	Path:       "/products/{product_name}/instance_pools/{instance_pool_name}",
+	Path:       "/products/{product_name}/instance-pools/{instance_pool_name}",
 	Method:     http.MethodGet,
 	Handler:    xreq.Convert(OneAction),
 	Authorizer: iauth.FAP(iauth.FeatureProductPool, iauth.ActionRead),

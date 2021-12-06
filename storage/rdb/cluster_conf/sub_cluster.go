@@ -109,7 +109,6 @@ func newSubCluster(pp *dao.TSubCluster, pool *icluster_conf.Pool, product *ibasi
 
 	if pool != nil {
 		data.Ready = pool.Ready
-		data.Tag = pool.Tag
 	}
 
 	return data

@@ -26,14 +26,15 @@ const tUserTableName = "users"
 
 // TUser Query Result
 type TUser struct {
-	ID                  int64     `db:"id"`
-	Name                string    `db:"name"`
-	SessionKey          string    `db:"session_key"`
-	SessionKeyCreatedAt time.Time `db:"session_key_created_at"`
-	Roles               string    `db:"roles"`
-	Password            string    `db:"password"`
-	CreatedAt           time.Time `db:"created_at"`
-	UpdatedAt           time.Time `db:"updated_at"`
+	ID              int64     `db:"id"`
+	Name            string    `db:"name"`
+	Type            int8      `db:"type"`
+	Password        string    `db:"password"`
+	Ticket          string    `db:"ticket"`
+	TicketCreatedAt time.Time `db:"ticket_created_at"`
+	Scopes          string    `db:"scopes"`
+	CreatedAt       time.Time `db:"created_at"`
+	UpdatedAt       time.Time `db:"updated_at"`
 }
 
 // TUserOne Query One
@@ -68,14 +69,16 @@ func TUserList(dbCtx lib.DBContexter, where *TUserParam) ([]*TUser, error) {
 type TUserParam struct {
 	IDs []int64 `db:"id,in"`
 
-	ID                  *int64     `db:"id"`
-	Name                *string    `db:"name"`
-	SessionKey          *string    `db:"session_key"`
-	SessionKeyCreatedAt *time.Time `db:"session_key_created_at"`
-	Roles               *string    `db:"roles"`
-	Password            *string    `db:"password"`
-	CreatedAt           *time.Time `db:"created_at"`
-	UpdatedAt           *time.Time `db:"updated_at"`
+	ID              *int64     `db:"id"`
+	Name            *string    `db:"name"`
+	Type            *int8      `db:"type"`
+	Types           []int8     `db:"type,in"`
+	Password        *string    `db:"password"`
+	Ticket          *string    `db:"ticket"`
+	TicketCreatedAt *time.Time `db:"ticket_created_at"`
+	Scopes          *string    `db:"scopes"`
+	CreatedAt       *time.Time `db:"created_at"`
+	UpdatedAt       *time.Time `db:"updated_at"`
 
 	OrderBy *string `db:"_orderby"`
 }

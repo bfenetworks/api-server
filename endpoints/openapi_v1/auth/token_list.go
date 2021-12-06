@@ -22,33 +22,33 @@ import (
 	"github.com/bfenetworks/api-server/stateful/container"
 )
 
-// ProdcutUserListRoute route
+// InnerUserListRoute route
 // AUTO GEN BY ctrl, MODIFY AS U NEED
-var ProdcutUserListEndpoint = &xreq.Endpoint{
-	Path:       "/auth/products/{product_name}/users",
+var TokenListEndpoint = &xreq.Endpoint{
+	Path:       "/auth/tokens",
 	Method:     http.MethodGet,
-	Handler:    xreq.Convert(ProdcutUserListAction),
-	Authorizer: iauth.FA(iauth.FeatureProductUser, iauth.ActionReadAll),
+	Handler:    xreq.Convert(TokenListAction),
+	Authorizer: iauth.FA(iauth.FeatureToken, iauth.ActionReadAll),
 }
 
-func productUserListActionProcess(req *http.Request) ([]*UserIdentifyData, error) {
-	list, err := container.ProductAuthorizateManager.GrantedUsers(req.Context())
+func tokenListActionProcess(req *http.Request) ([]*TokenData, error) {
+	list, err := container.AuthenticateManager.FetchTokens(req.Context(), nil)
 	if err != nil {
 		return nil, err
 	}
 
-	var rst []*UserIdentifyData
+	var tokens []*TokenData
 	for _, one := range list {
-		rst = append(rst, newUserIdentifyData(one, false))
+		tokens = append(tokens, newTokenData(one, true))
 	}
 
-	return rst, nil
+	return tokens, nil
 }
 
-var _ xreq.Handler = ProdcutUserListAction
+var _ xreq.Handler = TokenListAction
 
-// ProdcutUserListAction action
+// TokenListAction action
 // AUTO GEN BY ctrl, MODIFY AS U NEED
-func ProdcutUserListAction(req *http.Request) (interface{}, error) {
-	return productUserListActionProcess(req)
+func TokenListAction(req *http.Request) (interface{}, error) {
+	return tokenListActionProcess(req)
 }

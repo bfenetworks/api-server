@@ -1,0 +1,5 @@
+npm_cache
+build.sh
+ci.yml
+package-lock.json
+.scm

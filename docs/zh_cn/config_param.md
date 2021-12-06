@@ -80,7 +80,7 @@ UILogo      = "https://raw.githubusercontent.com/bfenetworks/bfe/develop/docs/im
 # Runtime Config
 [RunTime]
 # you can use "Skip {role_name} as authorization header to access api server if open this optional
-# eg: Headers[Authorization] = "Skip admin"
+# eg: Headers[Authorization] = "Skip System"
 # don't open it on production environment
 SkipTokenValidate   = false
 # sql will be record to log file when this option be opend

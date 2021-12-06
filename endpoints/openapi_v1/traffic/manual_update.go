@@ -28,7 +28,7 @@ import (
 // ManualUpdateRoute route
 // AUTO GEN BY ctrl, MODIFY AS U NEED
 var ManualUpdateEndpoint = &xreq.Endpoint{
-	Path:       "/products/{product_name}/clusters/{cluster_name}/scheduler/manual",
+	Path:       "/products/{product_name}/clusters/{cluster_name}/scheduler",
 	Method:     http.MethodPatch,
 	Handler:    xreq.Convert(ManualUpdateAction),
 	Authorizer: iauth.FAP(iauth.FeatureTraffic, iauth.ActionUpdate),
@@ -64,7 +64,7 @@ func manualUpdateActionProcess(req *http.Request, updateParam map[string]map[str
 	}
 
 	err = container.ClusterManager.UpdateCluster(req.Context(), product, cluster, &icluster_conf.ClusterParam{
-		ManualScheduler: updateParam,
+		Scheduler: updateParam,
 	})
 	if err != nil {
 		return nil, err

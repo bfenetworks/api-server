@@ -89,7 +89,7 @@ func (rm *RouteRuleManager) exportRouteRule(ctx context.Context) (*iversion_cont
 	for _, domain := range domains {
 		product, ok := tmp[domain.ProductID]
 		if !ok {
-			return nil, xerror.WrapDirtyDataErrorWithMsg("Domain refer Not Existed Product %d", domain.ProductID)
+			return nil, xerror.WrapDirtyDataErrorWithMsg("Domain refer Not Exist Product %d", domain.ProductID)
 		}
 		productMapID2Name[domain.ProductID] = product.Name
 	}
@@ -115,7 +115,6 @@ func newRouteTableFile(version string, productMapID2Name map[int64]string,
 
 	basicRule := route_rule_conf.ProductBasicRouteRuleFile{}
 	advanceRule := route_rule_conf.ProductAdvancedRouteRuleFile{}
-
 	newBasicRouteRuleFiles := func(brrs []*BasicRouteRule) (bs []route_rule_conf.BasicRouteRuleFile) {
 		for _, brr := range brrs {
 			bs = append(bs, route_rule_conf.BasicRouteRuleFile{
