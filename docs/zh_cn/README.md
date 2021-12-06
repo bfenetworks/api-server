@@ -17,7 +17,7 @@ BFE控制面包含如下组件：
 通过查看 [部署说明](/docs/zh_cn/deploy.md) 快速运行 API Server。
 
 # 二次开发
-API Sever 提供 OpenAPI 供第三方程序和 API Server 集成，[API 文档](docs/zh_cn/open_api/SUMMARY.md)
+API Sever 提供 OpenAPI 供第三方程序和 API Server 集成，接口定义详见 [API 文档](docs/zh_cn/open_api/SUMMARY.md)。
 
 
 # 相关模块
