@@ -51,7 +51,7 @@ BFE控制面包含如下组件：
 可查看 [Dashboard 使用文档](https://github.com/bfenetworks/dashboard/docs/zh-cn/user-guide/SUMMARY.md) 了解BFE管理控制台的基本概念和使用流程。
 
 
-## Conf Agent 部署
+## ConfAgent部署
 Conf Agent和 BFE 转发引擎同机部署。
 
 若未部署BFE转发引擎，可参考[BFE安装部署](https://www.bfe-networks.net/en_us/installation/install/)完成部署。
