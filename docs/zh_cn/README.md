@@ -16,9 +16,14 @@ BFE控制面包含如下组件：
 # 快速开始
 通过查看 [部署说明](/docs/zh_cn/deploy.md) 快速运行 API Server。
 
+## 快速体验
+如果你想不搭建环境而直接体验,我们也提供了环境:
+- 请发邮件给到 `bfe-osc@baidu.com`, 简单说明你和贵公司的名称.我们将为你创建专门的产品线和产品线管理员账号,你在 [控制面公开环境](http://180.76.139.37:8183) 即可开始体验
+- 你可以在 [配置动态生成结果](http://180.76.139.37:8420/conf/) 页面看到你的配置动态生成的配置文件
+
+
 # 二次开发
 API Sever 提供 OpenAPI 供第三方程序和 API Server 集成，接口定义详见 [API 文档](docs/zh_cn/open_api/SUMMARY.md)。
-
 
 # 相关模块
 - [BFE数据面：负载均衡器](https://github.com/bfenetworks/bfe)
@@ -29,3 +34,4 @@ API Sever 提供 OpenAPI 供第三方程序和 API Server 集成，接口定义�
 ## 关于BFE
 - 官网：https://www.bfe-networks.net
 - 书籍：[《深入理解BFE》](https://github.com/baidu/bfe-book) ：介绍网络接入的相关技术原理，说明BFE的设计思想，以及如何基于BFE搭建现代化的网络接入平台。现已开放全文阅读。
+	- 如果你使用了BFE控制面或者数据面,欢迎[登记](https://github.com/bfenetworks/bfe/issues/748), 我们会邀请你进入BFE用户微信群。同时，您可获赠一本《深入理解BFE》。
