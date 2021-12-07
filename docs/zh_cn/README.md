@@ -1,7 +1,7 @@
 API Server 是 BFE 控制面核心模块，完成配置的录入、存储和导出。
 
 # 控制面组件
-![架构](./assert/deploy_architecture.png)
+![架构](/docs/zh_cn/assert/deploy_architecture.png)
 
 图1：控制面组件
 
@@ -16,11 +16,11 @@ BFE控制面包含如下组件：
 # 快速开始
 ## 部署
 
-通过查看 [部署说明](./deploy.md) 快速运行 API Server。
+通过查看 [部署说明](/docs/zh_cn/deploy.md) 快速运行 API Server。
 
 ## 升级
 
-如果需要从一个早先的版本升级到最新发布的版本，参考 [升级指南](./upgrade.md) 。
+如果需要从一个早先的版本升级到最新发布的版本，参考 [升级指南](/docs/zh_cn/upgrade.md) 。
 
 ## 快速体验
 如果你想不搭建环境而想直接体验,我们也提供了环境:
@@ -29,7 +29,7 @@ BFE控制面包含如下组件：
 
 
 # 二次开发
-API Sever 提供 OpenAPI 供第三方程序和 API Server 集成，接口定义详见 [API 文档](./open_api/SUMMARY.md)。
+API Sever 提供 OpenAPI 供第三方程序和 API Server 集成，接口定义详见 [API 文档](/docs/zh_cn/open_api/SUMMARY.md)。
 
 # 相关模块
 - [BFE数据面：负载均衡器](https://github.com/bfenetworks/bfe)
