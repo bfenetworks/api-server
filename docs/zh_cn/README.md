@@ -14,7 +14,13 @@ BFE控制面包含如下组件：
 
 
 # 快速开始
+## 部署
+
 通过查看 [部署说明](/docs/zh_cn/deploy.md) 快速运行 API Server。
+
+## 升级
+
+如果您需要从一个早先的版本升级到最新发布的版本，参考 [升级指南](/docs/zh_cn/upgrade.md) 。
 
 ## 快速体验
 如果你想不搭建环境而想直接体验,我们也提供了环境:
@@ -31,7 +37,7 @@ API Sever 提供 OpenAPI 供第三方程序和 API Server 集成，接口定义�
 - [BFE控制面：Conf Agent](https://github.com/bfenetworks/conf-agent)
 
 
-## 关于BFE
+# 关于BFE
 - 官网：https://www.bfe-networks.net
 - 书籍：[《深入理解BFE》](https://github.com/baidu/bfe-book) ：介绍网络接入的相关技术原理，说明BFE的设计思想，以及如何基于BFE搭建现代化的网络接入平台。现已开放全文阅读。
 	- 如果你使用了BFE控制面或者数据面,欢迎[登记](https://github.com/bfenetworks/bfe/issues/748), 我们会邀请你进入BFE用户微信群。同时，您可获赠一本《深入理解BFE》。
