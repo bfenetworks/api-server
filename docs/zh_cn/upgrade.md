@@ -1,6 +1,6 @@
 # 升级指南
 
-本文档描述如何从一个已经部署的早先的版本进行升级
+本文档描述如何从一个已经部署的较早版本进行升级。
 
 ## v0.0.2
 
@@ -28,15 +28,13 @@ ALTER TABLE users DROP INDEX  name_uni;
 ALTER TABLE users ADD   UNIQUE KEY `name_uni` (`name`, `type`);
 ```
 
-### dashboard 版本升级
-请升级 Dashboard 到v0.02或更新的版本
+### Dashboard 版本升级
+请升级 Dashboard 到 v0.02 或更新的版本。
 
 ### Conf-Agent 版本升级
-需要v0.0.1或更新版本的Conf-Agent.
+需要 v0.0.1 或更新版本的 Conf-Agent 。
 
-NOTICE: if you use conf-agent v0.0.1 already, please edit `conf/conf-agent.toml`, the Authorization Header has NOT Previously compatible modify:
-
-注意: 如果你使用v0.0.1版本的Conf-Agent, 请按如下方式编辑 `conf/conf-agent.toml`:
+注意: 如果你使用 v0.0.1 版本的 Conf-Agent , 请按如下方式编辑 `conf/conf-agent.toml`:
 
 ```
 # old:
