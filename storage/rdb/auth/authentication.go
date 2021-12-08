@@ -44,7 +44,7 @@ func (ps *RDBAuthenticateStorager) FetchUserList(ctx context.Context, filter *ia
 	if filter == nil {
 		filter = &iauth.UserFilter{}
 	}
-	filter.Types = []int8{iauth.UserTypeJWT, iauth.UserTypeNormal}
+	filter.Type = &iauth.UserTypeNormal
 	list, err := dao.TUserList(dbCtx, userFilter2Param(filter))
 	if err != nil {
 		return nil, err
@@ -152,7 +152,7 @@ func userParamM2D(param *iauth.UserParam) *dao.TUserParam {
 
 	return &dao.TUserParam{
 		Name:            param.Name,
-		Type:            param.Type,
+		Type:            lib.PInt8(iauth.UserTypeNormal),
 		Password:        param.Password,
 		Scopes:          scopes,
 		Ticket:          param.SessionKey,

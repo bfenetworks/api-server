@@ -17,7 +17,6 @@ package auth
 import (
 	"net/http"
 
-	"github.com/bfenetworks/api-server/lib"
 	"github.com/bfenetworks/api-server/lib/xerror"
 	"github.com/bfenetworks/api-server/lib/xreq"
 	"github.com/bfenetworks/api-server/model/iauth"
@@ -61,7 +60,6 @@ func userCreateActionProcess(req *http.Request, param *UserCreateParam) error {
 		Name:     param.UserName,
 		Password: param.Password,
 		Scopes:   []string{scope},
-		Type:     lib.PInt8(typeStr2Int[param.Type]),
 	})
 }
 

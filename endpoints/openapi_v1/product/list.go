@@ -88,14 +88,14 @@ func ProductListAction(req *http.Request) (interface{}, error) {
 		productID = &(clusterObj.ProductID)
 	}
 
-	vistor, err := iauth.MustGetVistor(req.Context())
+	visitor, err := iauth.MustGetVisitor(req.Context())
 	if err != nil {
 		return nil, err
 	}
 
 	var grantedProducts []*ibasic.Product
-	if !vistor.IsAdmin() {
-		grantedProducts, err = container.AuthorizeManager.FetchVistorProductList(req.Context(), vistor)
+	if !visitor.IsAdmin() {
+		grantedProducts, err = container.AuthorizeManager.FetchVisitorProductList(req.Context(), visitor)
 		if err != nil {
 			return nil, err
 		}

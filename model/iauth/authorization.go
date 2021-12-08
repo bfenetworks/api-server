@@ -72,17 +72,17 @@ func (m *AuthorizeManager) UpdateUserIsAdmin(ctx context.Context, user *User, is
 }
 
 func (m *AuthorizeManager) Authorizate(ctx context.Context, authrizer *Authorization) (err error) {
-	vistor, err := MustGetVistor(ctx)
+	visitor, err := MustGetVisitor(ctx)
 	if err != nil {
 		return
 	}
 
-	if vistor.IsAdmin() {
+	if visitor.IsAdmin() {
 		return nil
 	}
 
 	featureGranted := false
-	for _, scope := range vistor.GetScopes() {
+	for _, scope := range visitor.GetScopes() {
 		permissions, ok := scope2permission[scope]
 		if !ok {
 			continue
@@ -108,7 +108,7 @@ func (m *AuthorizeManager) Authorizate(ctx context.Context, authrizer *Authoriza
 		if err != nil {
 			return err
 		}
-		ok, err := m.IsVistorProductGranted(ctx, vistor, product)
+		ok, err := m.IsVisitorProductGranted(ctx, visitor, product)
 		if err != nil {
 			return err
 		}
@@ -121,7 +121,7 @@ func (m *AuthorizeManager) Authorizate(ctx context.Context, authrizer *Authoriza
 	return nil
 }
 
-func (m *AuthorizeManager) IsVistorProductGranted(ctx context.Context, v *Visitor, product *ibasic.Product) (bound bool, err error) {
+func (m *AuthorizeManager) IsVisitorProductGranted(ctx context.Context, v *Visitor, product *ibasic.Product) (bound bool, err error) {
 	err = m.txn.AtomExecute(ctx, func(ctx context.Context) error {
 		if user := v.User; user != nil {
 			bound, err = m.storager.IsUserProductGranted(ctx, user, product)
@@ -135,7 +135,7 @@ func (m *AuthorizeManager) IsVistorProductGranted(ctx context.Context, v *Visito
 	return
 }
 
-func (m *AuthorizeManager) FetchVistorProductList(ctx context.Context, v *Visitor) (userProducts []*ibasic.Product, err error) {
+func (m *AuthorizeManager) FetchVisitorProductList(ctx context.Context, v *Visitor) (userProducts []*ibasic.Product, err error) {
 	err = m.txn.AtomExecute(ctx, func(ctx context.Context) error {
 		if user := v.User; user != nil {
 			userProducts, err = m.storager.FetchUserProducts(ctx, user)

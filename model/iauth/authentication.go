@@ -34,7 +34,6 @@ var keyUser key = "user"
 var (
 	UserTypeNormal int8 = 0
 	UserTypeToken  int8 = 1
-	UserTypeJWT    int8 = 2
 )
 
 const (
@@ -149,24 +148,24 @@ func (t *Token) IsAdmin() bool {
 	return t.Scope == ScopeSystem
 }
 
-func NewVistorContext(ctx context.Context, vistor *Visitor) context.Context {
-	return context.WithValue(ctx, keyUser, vistor)
+func NewVisitorContext(ctx context.Context, visitor *Visitor) context.Context {
+	return context.WithValue(ctx, keyUser, visitor)
 }
 
-func MustGetVistor(ctx context.Context) (*Visitor, error) {
+func MustGetVisitor(ctx context.Context) (*Visitor, error) {
 	obj := ctx.Value(keyUser)
 	if obj != nil {
 		return obj.(*Visitor), nil
 	}
 
 	if stateful.DefaultConfig.RunTime.SkipTokenValidate {
-		return newFakeVistor(ScopeSystem), nil
+		return newFakeVisitor(ScopeSystem), nil
 	}
 
 	return nil, xerror.WrapAuthenticateFailErrorWithMsg("User Not Login")
 }
 
-func newFakeVistor(scope string) *Visitor {
+func newFakeVisitor(scope string) *Visitor {
 	return &Visitor{
 		Token: &Token{
 			ID:    1,
@@ -178,7 +177,6 @@ func newFakeVistor(scope string) *Visitor {
 
 type UserParam struct {
 	Name               *string
-	Type               *int8
 	Password           *string
 	Scopes             []string
 	SessionKey         *string
@@ -334,7 +332,7 @@ var Authenticators = map[string]func(ctx context.Context, param *AuthenticatePar
 			return nil, xerror.WrapAuthenticateFailErrorWithMsg("Bad Authorization Flag")
 		}
 
-		return newFakeVistor(param.Identify), nil
+		return newFakeVisitor(param.Identify), nil
 	},
 }
 

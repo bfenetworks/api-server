@@ -39,10 +39,10 @@ func UserProbeAction(req *http.Request) (*http.Request, error) {
 		Identify: ss[1],
 	}
 
-	vistor, err := container.AuthenticateManager.Authenticate(req.Context(), param)
+	visitor, err := container.AuthenticateManager.Authenticate(req.Context(), param)
 	if err != nil {
 		return nil, err
 	}
 
-	return req.WithContext(iauth.NewVistorContext(req.Context(), vistor)), nil
+	return req.WithContext(iauth.NewVisitorContext(req.Context(), visitor)), nil
 }

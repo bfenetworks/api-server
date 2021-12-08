@@ -43,7 +43,7 @@ func userOneActionProcess(req *http.Request, param *UserNameParam) (*UserData, e
 		return nil, xerror.WrapRecordNotExist("User")
 	}
 
-	ups, err := container.AuthorizeManager.FetchVistorProductList(req.Context(), &iauth.Visitor{
+	ups, err := container.AuthorizeManager.FetchVisitorProductList(req.Context(), &iauth.Visitor{
 		User: user,
 	})
 	if err != nil {
@@ -76,7 +76,6 @@ func UserOneAction(req *http.Request) (interface{}, error) {
 type UserData struct {
 	UserName string `json:"user_name,omitempty"`
 	IsAdmin  bool   `json:"is_admin"`
-	Type     string `json:"type"`
 
 	SessionKey string   `json:"session_key,omitempty"`
 	Products   []string `json:"products,omitempty"`
@@ -86,20 +85,7 @@ func newUserData(user *iauth.User) *UserData {
 	data := &UserData{
 		UserName: user.Name,
 		IsAdmin:  user.Admin,
-		Type:     typeInt2Str[user.Type],
 	}
 
 	return data
 }
-
-var (
-	typeInt2Str = map[int8]string{
-		iauth.UserTypeJWT:    "jwt",
-		iauth.UserTypeNormal: "normal",
-	}
-
-	typeStr2Int = map[string]int8{
-		"jwt":    iauth.UserTypeJWT,
-		"noraml": iauth.UserTypeNormal,
-	}
-)

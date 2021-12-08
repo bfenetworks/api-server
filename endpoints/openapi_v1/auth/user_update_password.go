@@ -48,7 +48,7 @@ func newUserUpdatePasswordParam(req *http.Request) (*UserUpdatePasswordParam, er
 }
 
 func userUpdatePasswordActionProcess(req *http.Request, param *UserUpdatePasswordParam) error {
-	user, err := iauth.MustGetVistor(req.Context())
+	user, err := iauth.MustGetVisitor(req.Context())
 	if err != nil {
 		return err
 	}

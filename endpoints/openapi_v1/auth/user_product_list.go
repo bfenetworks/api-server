@@ -51,10 +51,6 @@ func productUserListActionProcess(req *http.Request, param *ProducctUserListPara
 
 	var userDataList []*UserData
 	for _, one := range list {
-		if param.Type != nil && *param.Type != typeInt2Str[one.Type] {
-			continue
-		}
-
 		userDataList = append(userDataList, newUserData(one))
 	}
 
