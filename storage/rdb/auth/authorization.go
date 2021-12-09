@@ -113,6 +113,10 @@ func (ps *RDBAuthorizeStorager) FetchTokenProduct(ctx context.Context, token *ia
 }
 
 func (ps *RDBAuthorizeStorager) BatchFetchTokenProduct(ctx context.Context, tokens []*iauth.Token) (map[int64]*ibasic.Product, error) {
+	if len(tokens) == 0 {
+		return map[int64]*ibasic.Product{}, nil
+	}
+
 	dbCtx, err := ps.dbCtxFactory(ctx)
 	if err != nil {
 		return nil, err
