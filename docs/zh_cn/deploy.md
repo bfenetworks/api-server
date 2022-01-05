@@ -48,7 +48,7 @@ BFE控制面包含如下组件：
 1. 部署：将output文件夹的内容拷贝到 API Server 的 static 文件夹（默认在api-server可执行文件同级目录）中即可
 1. 浏览器打开 http://host:{ServerPort} (ServerPort 为 API Server 部署时配置的端口号) 即可看到登录页面，测试账号和密码都是 `admin`。登陆后，请立刻修改您的admin的密码
 
-可查看 [Dashboard 使用文档](https://github.com/bfenetworks/dashboard/docs/zh-cn/user-guide/SUMMARY.md) 了解BFE管理控制台的基本概念和使用流程。
+可查看 [Dashboard 使用文档](https://github.com/bfenetworks/dashboard/blob/develop/docs/zh-cn/user-guide/SUMMARY.md) 了解BFE管理控制台的基本概念和使用流程。
 
 
 ## ConfAgent部署
