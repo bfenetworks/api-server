@@ -32,17 +32,10 @@ COVHTML := $(HOMEDIR)/covhtml.html # HTML representation of coverage profile
 # make, make all
 all: prepare compile package
 
-# set proxy env
-set-env:
-	$(GO) env -w GO111MODULE=on
-	$(GO) env -w GONOPROXY=\*\*.baidu.com\*\*
-	$(GO) env -w GOPROXY=https://goproxy.baidu-int.com
-	$(GO) env -w GONOSUMDB=\*
-
 #make prepare, download dependencies
 prepare: gomod
 
-gomod: set-env
+gomod:
 	$(GOMOD) download
 
 #make compile
