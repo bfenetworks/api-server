@@ -28,7 +28,7 @@
 | basic.timeouts| object |  超时设置| Y |  内容见 [表：超时设置](#timeouts) | 
 | sticky_sessions| object |  会话保持| Y | 内容见 [表：会话保持](#sticky_sessions)| 
 | sub_clusters| []string |  集群中挂载的子集群| Y |  | 
-| scheduler| object |  内网流量配置| Y | 具体说明见 [调度说明](0204-traffic.md#scheduler_explain)  | 
+| scheduler| object |  内网流量配置| Y | 具体说明见 [调度说明](traffic.md#scheduler_explain)  | 
 | passive_health_check| object |  被动健康检查| Y | 具体字段见 [表：被动健康检查](#passive_health_check) | 
 
 <a id="connection">表：连接设置</a>
