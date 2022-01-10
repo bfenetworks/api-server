@@ -119,7 +119,7 @@ HTTP BODY中参数示例
 ## 鉴权机制
 - API使用Token机制鉴权
 - 访问时在HTTP Authorization HEADER中加入SessionKey/Token
-- 鉴权详细机制见 [用户和鉴权](01global/0106-auth.md)
+- 鉴权详细机制见 [用户和鉴权](global/auth.md)
 - Session Key的使用示例：
 
 ```
