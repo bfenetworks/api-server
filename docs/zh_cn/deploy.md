@@ -77,6 +77,7 @@ Conf Agent和 BFE 转发引擎同机部署。
 - server_cert_conf.data  
  
 在热加载tls配置时， tls_rule_conf.data 内容和 server_cert_conf.data 内容相关联。当两者不一致时就会出现关联检查失败而报错。
+
 当前 默认的 tls_rule_conf.data 的配置依赖 `example.org` 证书配置 来指定 租户 `example_product` 的TLS协议配置。如果自行添加的证书中不存在 `example.org` 证书，并且继续使用默认的 tls_rule_conf.data 配置内容，ConfAgent 将在触发BFE热加载tls配置时报错。
 
 当前这个问题的解决方案是自行维护 tls_rule_conf.data 文件（ConfAgent会直接使用修改后的文件内容），根据业务需求手动修改该文件的原始内容。
