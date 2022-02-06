@@ -48,6 +48,7 @@ type PoolParam struct {
 type Pool struct {
 	ID        int64
 	Name      string
+	Type      int8
 	Ready     bool
 	Product   *ibasic.Product
 	Instances []Instance
@@ -122,7 +123,7 @@ func (rppm *PoolManager) FetchProductPool(ctx context.Context, product *ibasic.P
 		one, err = rppm.storager.FetchPool(ctx, name)
 		return err
 	})
-
+	
 	return
 }
 

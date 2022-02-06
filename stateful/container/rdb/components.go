@@ -32,9 +32,10 @@ import (
 	"github.com/bfenetworks/api-server/storage/rdb/route_conf"
 	"github.com/bfenetworks/api-server/storage/rdb/txn"
 	"github.com/bfenetworks/api-server/storage/rdb/version_control"
+	"github.com/bfenetworks/api-server/storage/register"
 )
 
-func Init() {
+func Init(registerServier *register.RegisterServier) {
 	container.TxnStoragerSingleton = txn.NewRDBTxnStorager(stateful.NewBFEDBContext)
 	container.VersionControlStoragerSingleton = version_control.NewVersionControllerStorage(stateful.NewBFEDBContext)
 	container.RouteRuleStoragerSingleton = route_conf.NewRouteRuleStorager(
@@ -44,7 +45,8 @@ func Init() {
 	container.BFEClusterStoragerSingleton = basic.NewRDBBFEClusterStorager(stateful.NewBFEDBContext)
 	container.PoolStoragerSingleton = cluster_conf.NewRDBPoolStorager(
 		stateful.NewBFEDBContext,
-		container.ProductStoragerSingleton)
+		container.ProductStoragerSingleton,
+		registerServier)
 	container.SubClusterStoragerSingleton = cluster_conf.NewRDBSubClusterStorager(
 		stateful.NewBFEDBContext,
 		container.PoolStoragerSingleton,

@@ -23,20 +23,23 @@ import (
 	"github.com/bfenetworks/api-server/model/ibasic"
 	"github.com/bfenetworks/api-server/model/icluster_conf"
 	"github.com/bfenetworks/api-server/storage/rdb/internal/dao"
+	"github.com/bfenetworks/api-server/storage/register"
 )
 
 type RDBPoolStorager struct {
 	dbCtxFactory lib.DBContextFactory
 
 	productStorager ibasic.ProductStorager
+	registerServier *register.RegisterServier
 }
 
 func NewRDBPoolStorager(dbCtxFactory lib.DBContextFactory,
-	productStorager ibasic.ProductStorager) *RDBPoolStorager {
+	productStorager ibasic.ProductStorager, registerServier *register.RegisterServier) *RDBPoolStorager {
 
 	return &RDBPoolStorager{
 		dbCtxFactory:    dbCtxFactory,
 		productStorager: productStorager,
+		registerServier: registerServier,
 	}
 }
 
@@ -121,10 +124,10 @@ func (rpps *RDBPoolStorager) FetchPool(ctx context.Context, name string) (*iclus
 
 func newPool(pp *dao.TPools, product *ibasic.Product) (*icluster_conf.Pool, error) {
 	data := &icluster_conf.Pool{
-		ID:    pp.Id,
-		Name:  pp.Name,
-		Ready: pp.Ready,
-
+		ID:      pp.Id,
+		Name:    pp.Name,
+		Ready:   pp.Ready,
+		Type:    pp.Type,
 		Product: product,
 
 		Tag: pp.Tag,
@@ -177,6 +180,7 @@ func (rpps *RDBPoolStorager) FetchPools(ctx context.Context, filter *icluster_co
 		}
 		rst = append(rst, p)
 	}
+	rpps.registerServier.GetRegisteredInstance(rst)
 
 	return rst, nil
 }

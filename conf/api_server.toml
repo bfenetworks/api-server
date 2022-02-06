@@ -34,10 +34,10 @@ StdOut      = false
 # see https://github.com/go-sql-driver/mysql/blob/master/dsn.go#L37
 [Databases.bfe_db]
 DBName              = "open_bfe"
-Addr                = "127.0.0.1:3306"
+Addr                = "120.78.148.188:3306"
 Net                 = "tcp"
-User                = "{user}"
-Passwd              = "{password}"
+User                = "lampup"
+Passwd              = "Lampup@123"
 MultiStatements     = true
 MaxAllowedPacket    = 67108864
 ParseTime           = true
@@ -75,6 +75,6 @@ RecordSQL           = false
 # how long use must login again
 SessionExpireDay    = 10
 # static file path, when dynamic router not be matched, static file will be return if found
-StaticFilePath      = "./static"
+StaticFilePath      = "/leaning/software/network/bfe/api-service/static"
 # debug info will be add to response when this option be opend
 Debug               = false
