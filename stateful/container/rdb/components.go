@@ -90,11 +90,16 @@ func Init(registerServier *register.RegisterServier) {
 		container.VersionControlManager,
 		container.DomainStoragerSingleton)
 
+	container.PoolInstancesManager = icluster_conf.NewPoolInstancesManager(map[int8]icluster_conf.PoolInstanceStorager{
+		icluster_conf.PoolInstancesTypeRDB: cluster_conf.NewRDBPoolInstanceStorager(stateful.NewBFEDBContext),
+	})
+
 	container.ClusterManager = icluster_conf.NewClusterManager(
 		container.TxnStoragerSingleton,
 		container.ClusterStoragerSingleton,
 		container.SubClusterStoragerSingleton,
 		container.BFEClusterStoragerSingleton,
+		container.PoolInstancesManager,
 		container.VersionControlManager,
 		map[string]func(context.Context, *ibasic.Product, *icluster_conf.Cluster) error{
 			"rules": container.RouteRuleManager.ClusterDeleteChecker,
@@ -125,5 +130,6 @@ func Init(registerServier *register.RegisterServier) {
 		container.TxnStoragerSingleton,
 		container.PoolStoragerSingleton,
 		container.BFEClusterStoragerSingleton,
-		container.SubClusterStoragerSingleton)
+		container.SubClusterStoragerSingleton,
+		container.PoolInstancesManager)
 }

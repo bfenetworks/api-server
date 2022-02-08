@@ -15,8 +15,6 @@
 package register
 
 import (
-	"strings"
-
 	"github.com/bfenetworks/api-server/model/icluster_conf"
 	"github.com/bfenetworks/api-server/stateful"
 	register "github.com/bfenetworks/api-server/storage/register/nacos"
@@ -49,15 +47,16 @@ func (registerServier *RegisterServier) Init() {
 }
 
 func (registerServier *RegisterServier) GetRegisteredInstance(pools []*icluster_conf.Pool) {
-	for _, pool := range pools {
-		if registerType, ok := registerServier.TypeMapper[int(pool.Type)]; ok {
-			registerObject, _ok := registerServier.RegisterExample[registerType]
-			if !_ok {
-				continue
-			}
-			name := pool.Name[strings.Index(pool.Name, ".")+1:]
-			instances, _ := registerObject.GetInstance(name)
-			pool.Instances = instances
-		}
-	}
+	panic("")
+	// for _, pool := range pools {
+	// if registerType, ok := registerServier.TypeMapper[int(pool.Type)]; ok {
+	// 	registerObject, _ok := registerServier.RegisterExample[registerType]
+	// 	if !_ok {
+	// 		continue
+	// 	}
+	// 	name := pool.Name[strings.Index(pool.Name, ".")+1:]
+	// instances, _ := registerObject.GetInstance(name)
+	// pool.Instances = instances
+	// }
+	// }
 }

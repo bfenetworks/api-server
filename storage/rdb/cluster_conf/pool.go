@@ -63,22 +63,12 @@ func poolParami2d(data *icluster_conf.PoolParam) (*dao.TPoolsParam, error) {
 		return nil, nil
 	}
 
-	var detail *string
-	if data.Instances != nil {
-		bs, err := json.Marshal(data.Instances)
-		if err != nil {
-			return nil, xerror.WrapParamErrorWithMsg("Instances Marshal, err: %s", err)
-		}
-
-		detail = lib.PString(string(bs))
-	}
-
 	return &dao.TPoolsParam{
-		Id:             data.ID,
-		Name:           data.Name,
-		ProductID:      data.ProductID,
-		InstanceDetail: detail,
-		Tag:            data.Tag,
+		Id:        data.ID,
+		Name:      data.Name,
+		ProductID: data.ProductID,
+		Type:      data.Type,
+		Tag:       data.Tag,
 	}, nil
 }
 
@@ -96,16 +86,13 @@ func (rpps *RDBPoolStorager) CreatePool(ctx context.Context, product *ibasic.Pro
 		return nil, err
 	}
 
-	newID, err := dao.TPoolsCreate(dbCtx, param)
+	_, err = dao.TPoolsCreate(dbCtx, param)
 	if err != nil {
 		return nil, err
 	}
 
-	return &icluster_conf.Pool{
-		ID:        newID,
-		Name:      *data.Name,
-		Instances: data.Instances,
-	}, nil
+	return rpps.FetchPool(ctx, *param.Name)
+
 }
 
 func (rpps *RDBPoolStorager) FetchPool(ctx context.Context, name string) (*icluster_conf.Pool, error) {
@@ -133,12 +120,15 @@ func newPool(pp *dao.TPools, product *ibasic.Product) (*icluster_conf.Pool, erro
 		Tag: pp.Tag,
 	}
 
+	// get default instance list
 	if pp.InstanceDetail == "" || pp.InstanceDetail == "NULL" {
 		pp.InstanceDetail = "[]"
 	}
-	if err := json.Unmarshal([]byte(pp.InstanceDetail), &data.Instances); err != nil {
+	is := []icluster_conf.Instance{}
+	if err := json.Unmarshal([]byte(pp.InstanceDetail), &is); err != nil {
 		return nil, xerror.WrapDirtyDataErrorWithMsg("pool %s, raw: %s, err: %v", pp.Name, pp.InstanceDetail, err)
 	}
+	data.SetDefaultInstances(is)
 
 	return data, nil
 }
@@ -180,7 +170,7 @@ func (rpps *RDBPoolStorager) FetchPools(ctx context.Context, filter *icluster_co
 		}
 		rst = append(rst, p)
 	}
-	rpps.registerServier.GetRegisteredInstance(rst)
+	// rpps.registerServier.GetRegisteredInstance(rst)
 
 	return rst, nil
 }
