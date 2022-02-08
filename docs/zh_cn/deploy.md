@@ -61,5 +61,57 @@ Conf Agent和 BFE 转发引擎同机部署。
 1. 获取Conf Agent可执行程序
     - 方式一：通过源码编译：clone [bfenetwork/conf-agent](https://github.com/bfenetworks/conf-agent) 仓库后进入项目根目录，执行 `make`， output文件夹包括了可执行文件和初始配置文件
     - 方式二：直接进入 [releases](https://github.com/bfenetworks/conf-agent/releases) 页面下载相应的编译产出
+1. [可选]微调部分BFE配置文件的内容。这些BFE配置文件当前暂不支持通过APIServer管理。详见 [可能需要手动维护的BFE配置文件](#keep)
 1. 修改配置，详见 [配置文件说明](https://github.com/bfenetworks/conf-agent/blob/develop/docs/zh_cn/config.md)，使其能访问API Server导出最新的配置
 1. 启动 Conf Agent。执行 `./conf-agent`
+
+### <a id="keep">可能需要手动维护的BFE配置文件</a>
+
+对于tls配置，现在APIServer不支持 配置 的文件有：
+- client_ca
+- client_crl
+- session_ticket_key.data
+- tls_rule_conf.data
+
+APIServer支持配置和下发的文件有：
+- server_cert_conf.data  
+ 
+在热加载tls配置时， tls_rule_conf.data 内容和 server_cert_conf.data 内容存在关联。当两者不一致时就会出现关联检查失败而报错。
+
+当前 默认的 tls_rule_conf.data 的配置依赖 `example.org` 证书配置 来指定 租户 `example_product` 的TLS协议配置。如果自行添加的证书中不存在 `example.org` 证书，并且继续使用默认的 tls_rule_conf.data 配置内容，ConfAgent 将在触发BFE热加载tls配置时报错。
+
+对这个问题的解决方案是自行维护 tls_rule_conf.data 文件（ConfAgent会直接使用修改后的文件内容），根据业务需求手动修改该文件的原始内容。
+
+如果你不需要对租户进行自定义HTTPS配置，建议修改方案为：
+
+```
+默认配置内容：
+{
+    "Version": "12",
+    "DefaultNextProtos": ["http/1.1"],
+    "Config": {
+        "example_product": {
+            "VipConf": [
+                "10.199.4.14"
+            ],
+            "SniConf": ["example.org"],
+            "CertName": "example.org",
+            "NextProtos": [
+                "h2;rate=100;isw=65535;mcs=200;level=0",
+                "http/1.1"
+            ],
+            "Grade": "C",
+            "ClientAuth": false,
+            "ClientCAName": "example_ca"
+        }
+    }
+}
+
+修改后的简化配置：
+{
+    "Version": "12",
+    "DefaultNextProtos": ["http/1.1"],
+    "Config": {}
+}
+
+```
