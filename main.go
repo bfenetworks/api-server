@@ -28,7 +28,6 @@ import (
 	"github.com/bfenetworks/api-server/endpoints"
 	"github.com/bfenetworks/api-server/stateful"
 	"github.com/bfenetworks/api-server/stateful/container/rdb"
-	"github.com/bfenetworks/api-server/storage/register"
 	"github.com/bfenetworks/api-server/version"
 )
 
@@ -85,12 +84,7 @@ func main() {
 		stateful.Exit("config.InitDB", err, -1)
 	}
 
-	registerConfig, _ := stateful.GetRegisterConfig(confDir)
-
-	registerServier := register.RegisterServier{RegisterConfig: registerConfig}
-	registerServier.Init()
-
-	rdb.Init(&registerServier)
+	rdb.Init()
 	serverStartUp()
 }
 

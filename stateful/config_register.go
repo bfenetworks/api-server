@@ -15,43 +15,23 @@
 package stateful
 
 import (
-	"io/ioutil"
-	"path"
-
-	"github.com/baidu/go-lib/log"
-	"gopkg.in/yaml.v3"
+	register "github.com/bfenetworks/api-server/model/register/nacos"
+	"github.com/nacos-group/nacos-sdk-go/common/constant"
 )
 
-type Address struct {
-	IpAddr string `yaml:"ipAddr"`
-	Port   uint64 `yaml:"port"`
+type NacosRegisterConfig struct {
+	ServerConfig []constant.ServerConfig
+	ClientConfig constant.ClientConfig
 }
 
-type RegisterInfo struct {
-	Name      string    `yaml:"name"`
-	Type      string    `yaml:"type"`
-	Address   []Address `yaml:"address"`
-	NameSpace string    `yaml:"nameSpace"`
-	Config map[string]string `yaml:"config"`
+func (d *Config) InitRegister() error {
+
+	d.initNacosRegister()
+	return nil
 }
 
-type RegisterMainConfig struct {
-	Registers []RegisterInfo `yaml:"register"`
-}
-
-func GetRegisterConfig(confDir *string) (*RegisterMainConfig, error) {
-	var config *RegisterMainConfig
-	confPath := path.Join(*confDir, "bfe_register.yaml")
-	buffer, err := ioutil.ReadFile(confPath)
-	if err != nil {
-		log.Logger.Error("confg_register.getRegisterConfig(): in BfeRegisterConfigLoad():%s", err.Error())
-		return nil, err
-	}
-	err = yaml.Unmarshal(buffer, &config)
-	if err != nil {
-		log.Logger.Error("confg_register.getRegisterConfig(): in BfeRegisterConfigLoad():%s", err.Error())
-		return nil, err
-	}
-	return config, nil
-
+func (d *Config) initNacosRegister() error {
+	registerObject := register.RegsiterNacos{ClientConfig: d.NacosRegsiter.ClientConfig, ServerConfig: d.NacosRegsiter.ServerConfig}
+	registerObject.Init()
+	return nil
 }

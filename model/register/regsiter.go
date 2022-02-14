@@ -18,34 +18,16 @@ import (
 	"strings"
 
 	"github.com/bfenetworks/api-server/model/icluster_conf"
-	"github.com/bfenetworks/api-server/stateful"
-	register "github.com/bfenetworks/api-server/storage/register/nacos"
 )
 
 type Register interface {
-	SetRegisterInfo(registerInfo stateful.RegisterInfo)
 	GetInstance(name string) ([]icluster_conf.Instance, error)
-	//GetInstances(name []string) []icluster_conf.Instance
 	Init() error
 }
 
 type RegisterServier struct {
-	RegisterConfig  *stateful.RegisterMainConfig
 	RegisterExample map[string]Register
 	TypeMapper      map[int]string
-}
-
-func (registerServier *RegisterServier) Init() {
-	registerServier.RegisterExample = make(map[string]Register)
-	registerServier.TypeMapper = make(map[int]string)
-	registerServier.TypeMapper[1] = "nacos"
-	for _, registerInfo := range registerServier.RegisterConfig.Registers {
-		if registerInfo.Type == "nacos" {
-			registerObject := register.RegsiterNacos{RegisterInfo: registerInfo}
-			registerObject.Init()
-			registerServier.RegisterExample[registerInfo.Type] = &registerObject
-		}
-	}
 }
 
 func (registerServier *RegisterServier) GetRegisteredInstance(pools []*icluster_conf.Pool) {

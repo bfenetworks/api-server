@@ -32,10 +32,9 @@ import (
 	"github.com/bfenetworks/api-server/storage/rdb/route_conf"
 	"github.com/bfenetworks/api-server/storage/rdb/txn"
 	"github.com/bfenetworks/api-server/storage/rdb/version_control"
-	"github.com/bfenetworks/api-server/storage/register"
 )
 
-func Init(registerServier *register.RegisterServier) {
+func Init() {
 	container.TxnStoragerSingleton = txn.NewRDBTxnStorager(stateful.NewBFEDBContext)
 	container.VersionControlStoragerSingleton = version_control.NewVersionControllerStorage(stateful.NewBFEDBContext)
 	container.RouteRuleStoragerSingleton = route_conf.NewRouteRuleStorager(

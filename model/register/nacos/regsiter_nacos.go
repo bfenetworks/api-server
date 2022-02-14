@@ -16,7 +16,6 @@ package register
 
 import (
 	"github.com/bfenetworks/api-server/model/icluster_conf"
-	"github.com/bfenetworks/api-server/stateful"
 	"github.com/nacos-group/nacos-sdk-go/clients"
 	"github.com/nacos-group/nacos-sdk-go/clients/naming_client"
 	"github.com/nacos-group/nacos-sdk-go/common/constant"
@@ -25,37 +24,17 @@ import (
 )
 
 type RegsiterNacos struct {
-	RegisterInfo stateful.RegisterInfo
+	ServerConfig []constant.ServerConfig
+	ClientConfig constant.ClientConfig
 	client       naming_client.INamingClient
 }
 
-func (register *RegsiterNacos) SetRegisterInfo(registerInfo stateful.RegisterInfo) {
-	register.RegisterInfo = registerInfo
-}
-
 func (register *RegsiterNacos) Init() error {
-	registerInfo := register.RegisterInfo
-	sc := make([]constant.ServerConfig, len(registerInfo.Address))
-	for addressIndex, address := range registerInfo.Address {
-		sc[addressIndex] = constant.ServerConfig{
-			IpAddr: address.IpAddr,
-			Port:   address.Port,
-		}
-	}
-	cc := constant.ClientConfig{
-		NamespaceId:         register.RegisterInfo.NameSpace, //namespace id
-		TimeoutMs:           5000,
-		NotLoadCacheAtStart: false,
-		LogDir:              "./log",
-		CacheDir:            "./cache",
-		RotateTime:          "1h",
-		MaxAge:              3,
-		LogLevel:            "debug",
-	}
+
 	client, err := clients.NewNamingClient(
 		vo.NacosClientParam{
-			ClientConfig:  &cc,
-			ServerConfigs: sc,
+			ClientConfig:  &register.ClientConfig,
+			ServerConfigs: register.ServerConfig,
 		},
 	)
 	if err != nil {
@@ -76,12 +55,12 @@ func (regsiter *RegsiterNacos) GetInstance(name string) ([]icluster_conf.Instanc
 	}
 	bfeInstances := make([]icluster_conf.Instance, len(instances))
 	for index, instance := range instances {
-		bfeInstances[index] = CreateBfeInstance(instance)
+		bfeInstances[index] = greateBfeInstance(instance)
 	}
 	return bfeInstances, nil
 }
 
-func CreateBfeInstance(instance model.Instance) icluster_conf.Instance {
+func greateBfeInstance(instance model.Instance) icluster_conf.Instance {
 	bfeInstance := icluster_conf.Instance{
 		IP:       instance.Ip,
 		Ports:    map[string]int{"Default": int(instance.Port)},

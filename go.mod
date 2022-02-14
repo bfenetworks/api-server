@@ -19,7 +19,6 @@ require (
 	github.com/rs/cors v1.8.0
 	gopkg.in/gcfg.v1 v1.2.3
 	gopkg.in/tylerb/graceful.v1 v1.2.15
-	gopkg.in/yaml.v3 v3.0.0-20210107192922-496545a6307b
 )
 
 // replace github.com/bfenetworks/bfe => /home/liuqing/Workspace/src/github.com/bfenetworks/bfe
