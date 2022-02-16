@@ -45,17 +45,37 @@ func (rm *ClusterManager) clusterTableConfGenerator(ctx context.Context) (*ivers
 		return nil, err
 	}
 
+	pools := map[string]*Pool{}
+	for _, cluster := range clusters {
+		for _, subcluster := range cluster.SubClusters {
+			if subcluster.InstancePool != nil {
+				pools[subcluster.InstancePool.Name] = subcluster.InstancePool
+			}
+		}
+	}
+
+	// maybe rpc in db transaction
+	piMap, err := rm.poolInstancesManager.BatchFetchInstances(ctx, PoolMap2List(pools))
+	if err != nil {
+		return nil, err
+	}
+
 	allClusters := cluster_table_conf.AllClusterBackend{}
 	for _, cluster := range clusters {
 		clusterBackend := map[string]cluster_table_conf.SubClusterBackend{}
 
 		for _, subCluster := range cluster.SubClusters {
-			if subCluster.InstancePool == nil || len(subCluster.InstancePool.Instances) == 0 {
+			if subCluster.InstancePool == nil {
 				continue
 			}
 
-			subClusterBackend := make(cluster_table_conf.SubClusterBackend, 0, len(subCluster.InstancePool.Instances))
-			for _, instance := range subCluster.InstancePool.Instances {
+			pi := piMap[subCluster.InstancePool.Name]
+			if pi == nil || len(pi.Instances) == 0 {
+				continue
+			}
+
+			subClusterBackend := make(cluster_table_conf.SubClusterBackend, 0, len(pi.Instances))
+			for _, instance := range pi.Instances {
 				subClusterBackend = append(subClusterBackend, &cluster_table_conf.BackendConf{
 					Name:   lib.PString(instance.HostName),
 					Addr:   lib.PString(instance.IP),

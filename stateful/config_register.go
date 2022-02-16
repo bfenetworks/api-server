@@ -15,8 +15,12 @@
 package stateful
 
 import (
-	register "github.com/bfenetworks/api-server/model/register/nacos"
+	"fmt"
+
+	"github.com/nacos-group/nacos-sdk-go/clients"
+	"github.com/nacos-group/nacos-sdk-go/clients/naming_client"
 	"github.com/nacos-group/nacos-sdk-go/common/constant"
+	"github.com/nacos-group/nacos-sdk-go/vo"
 )
 
 type NacosRegisterConfig struct {
@@ -24,14 +28,28 @@ type NacosRegisterConfig struct {
 	ClientConfig constant.ClientConfig
 }
 
-func (d *Config) InitRegister() error {
+var NacosClient naming_client.INamingClient
 
-	d.initNacosRegister()
+func (d *Config) InitNacos() error {
+	if d.NacosRegsiter.ClientConfig.NamespaceId == "" || len(d.NacosRegsiter.ServerConfig) == 0 {
+		fmt.Println("The configuration is not sound and naocs will not be started")
+		return nil
+	}
+	client, err := clients.NewNamingClient(
+		vo.NacosClientParam{
+			ClientConfig:  &d.NacosRegsiter.ClientConfig,
+			ServerConfigs: d.NacosRegsiter.ServerConfig,
+		},
+	)
+	if err != nil {
+		msg := fmt.Sprintf("nacos start err - %s", err)
+		fmt.Println("nacos start err :", msg)
+		return err
+	}
+	NacosClient = client
 	return nil
 }
 
-func (d *Config) initNacosRegister() error {
-	registerObject := register.RegsiterNacos{ClientConfig: d.NacosRegsiter.ClientConfig, ServerConfig: d.NacosRegsiter.ServerConfig}
-	registerObject.Init()
-	return nil
+func GetNacosClient() (naming_client.INamingClient, error) {
+	return NacosClient, nil
 }

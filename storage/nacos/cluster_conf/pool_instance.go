@@ -12,39 +12,48 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package register
+package cluster_conf
 
 import (
+	"context"
+	"strings"
+
 	"github.com/bfenetworks/api-server/model/icluster_conf"
-	"github.com/nacos-group/nacos-sdk-go/clients"
 	"github.com/nacos-group/nacos-sdk-go/clients/naming_client"
-	"github.com/nacos-group/nacos-sdk-go/common/constant"
 	"github.com/nacos-group/nacos-sdk-go/model"
 	"github.com/nacos-group/nacos-sdk-go/vo"
 )
 
-type RegsiterNacos struct {
-	ServerConfig []constant.ServerConfig
-	ClientConfig constant.ClientConfig
-	client       naming_client.INamingClient
+type NacosPoolInstanceStorager struct {
+	client naming_client.INamingClient
 }
 
-func (register *RegsiterNacos) Init() error {
-
-	client, err := clients.NewNamingClient(
-		vo.NacosClientParam{
-			ClientConfig:  &register.ClientConfig,
-			ServerConfigs: register.ServerConfig,
-		},
-	)
-	if err != nil {
-		return err
+func NewNacosPoolInstanceStorager(client naming_client.INamingClient) *NacosPoolInstanceStorager {
+	return &NacosPoolInstanceStorager{
+		client: client,
 	}
-	register.client = client
+}
+
+func (rpps *NacosPoolInstanceStorager) UpdateInstances(ctx context.Context, pool *icluster_conf.Pool, pis *icluster_conf.PoolInstances) error {
+
 	return nil
 }
 
-func (regsiter *RegsiterNacos) GetInstance(name string) ([]icluster_conf.Instance, error) {
+func (rpps *NacosPoolInstanceStorager) BatchFetchInstances(ctx context.Context, poolList []*icluster_conf.Pool) (map[string]*icluster_conf.PoolInstances, error) {
+	m := map[string]*icluster_conf.PoolInstances{}
+	for _, one := range poolList {
+		pi, err := rpps.GetInstance(one.Name[strings.Index(one.Name, ".")+1:])
+		pi.Name = one.Name
+		if err != nil {
+			return nil, err
+		}
+		m[pi.Name] = pi
+	}
+
+	return m, nil
+}
+
+func (regsiter *NacosPoolInstanceStorager) GetInstance(name string) (*icluster_conf.PoolInstances, error) {
 	selectInstancesParam := vo.SelectInstancesParam{
 		ServiceName: name,
 		HealthyOnly: true,
@@ -55,12 +64,13 @@ func (regsiter *RegsiterNacos) GetInstance(name string) ([]icluster_conf.Instanc
 	}
 	bfeInstances := make([]icluster_conf.Instance, len(instances))
 	for index, instance := range instances {
-		bfeInstances[index] = greateBfeInstance(instance)
+		bfeInstances[index] = newBFEInstance(instance)
 	}
-	return bfeInstances, nil
+
+	return &icluster_conf.PoolInstances{Name: name, Instances: bfeInstances}, nil
 }
 
-func greateBfeInstance(instance model.Instance) icluster_conf.Instance {
+func newBFEInstance(instance model.Instance) icluster_conf.Instance {
 	bfeInstance := icluster_conf.Instance{
 		IP:       instance.Ip,
 		Ports:    map[string]int{"Default": int(instance.Port)},

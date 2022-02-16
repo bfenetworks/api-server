@@ -25,6 +25,24 @@ import (
 	"github.com/bfenetworks/api-server/stateful/container"
 )
 
+// UpdateParam Request Param
+// AUTO GEN BY ctrl, MODIFY AS U NEED
+type UpdateParam struct {
+	Name      *string     `uri:"instance_pool_name" validate:"required,min=2"`
+	Instances []*Instance `json:"instances" validate:"min=1,dive"`
+}
+
+// AUTO GEN BY ctrl, MODIFY AS U NEED
+func NewUpdateParam(req *http.Request) (*UpdateParam, error) {
+	param := &UpdateParam{}
+	err := xreq.Bind(req, param)
+	if err != nil {
+		return nil, err
+	}
+
+	return param, err
+}
+
 // UpdateRoute route
 // AUTO GEN BY ctrl, MODIFY AS U NEED
 var UpdateEndpoint = &xreq.Endpoint{
@@ -39,7 +57,7 @@ var _ xreq.Handler = UpdateAction
 // UpdateAction action
 // AUTO GEN BY ctrl, MODIFY AS U NEED
 func UpdateAction(req *http.Request) (interface{}, error) {
-	param, err := NewUpsertParam(req)
+	param, err := NewCreateParam(req)
 	if err != nil {
 		return nil, err
 	}
@@ -56,11 +74,14 @@ func UpdateAction(req *http.Request) (interface{}, error) {
 		return nil, xerror.WrapRecordNotExist("Instance Pool")
 	}
 
-	err = container.PoolManager.UpdateProductPool(req.Context(), product, one, &icluster_conf.PoolParam{
+	pi := &icluster_conf.PoolInstances{
+		Name:      one.Name,
 		Instances: Instancesc2i(param.Instances),
-	})
+	}
+	err = container.PoolInstancesManager.UpdateInstances(req.Context(), one, pi)
+	if err != nil {
+		return nil, err
+	}
 
-	one.Instances = Instancesc2i(param.Instances)
-
-	return NewOneData(one), err
+	return NewOneData(one, pi), nil
 }

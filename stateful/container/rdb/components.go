@@ -25,6 +25,7 @@ import (
 	"github.com/bfenetworks/api-server/model/iversion_control"
 	"github.com/bfenetworks/api-server/stateful"
 	"github.com/bfenetworks/api-server/stateful/container"
+	nacos_cluster_conf "github.com/bfenetworks/api-server/storage/nacos/cluster_conf"
 	"github.com/bfenetworks/api-server/storage/rdb/auth"
 	"github.com/bfenetworks/api-server/storage/rdb/basic"
 	"github.com/bfenetworks/api-server/storage/rdb/cluster_conf"
@@ -44,8 +45,7 @@ func Init() {
 	container.BFEClusterStoragerSingleton = basic.NewRDBBFEClusterStorager(stateful.NewBFEDBContext)
 	container.PoolStoragerSingleton = cluster_conf.NewRDBPoolStorager(
 		stateful.NewBFEDBContext,
-		container.ProductStoragerSingleton,
-		registerServier)
+		container.ProductStoragerSingleton)
 	container.SubClusterStoragerSingleton = cluster_conf.NewRDBSubClusterStorager(
 		stateful.NewBFEDBContext,
 		container.PoolStoragerSingleton,
@@ -89,11 +89,18 @@ func Init() {
 		container.VersionControlManager,
 		container.DomainStoragerSingleton)
 
+	nacosClient, _ := stateful.GetNacosClient()
+	container.PoolInstancesManager = icluster_conf.NewPoolInstancesManager(map[int8]icluster_conf.PoolInstanceStorager{
+		icluster_conf.PoolInstancesTypeRDB:   cluster_conf.NewRDBPoolInstanceStorager(stateful.NewBFEDBContext),
+		icluster_conf.PoolInstancesTypeNacos: nacos_cluster_conf.NewNacosPoolInstanceStorager(nacosClient),
+	})
+
 	container.ClusterManager = icluster_conf.NewClusterManager(
 		container.TxnStoragerSingleton,
 		container.ClusterStoragerSingleton,
 		container.SubClusterStoragerSingleton,
 		container.BFEClusterStoragerSingleton,
+		container.PoolInstancesManager,
 		container.VersionControlManager,
 		map[string]func(context.Context, *ibasic.Product, *icluster_conf.Cluster) error{
 			"rules": container.RouteRuleManager.ClusterDeleteChecker,
@@ -124,5 +131,6 @@ func Init() {
 		container.TxnStoragerSingleton,
 		container.PoolStoragerSingleton,
 		container.BFEClusterStoragerSingleton,
-		container.SubClusterStoragerSingleton)
+		container.SubClusterStoragerSingleton,
+		container.PoolInstancesManager)
 }

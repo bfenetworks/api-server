@@ -49,6 +49,17 @@ MaxIdleConns        = 100
 ConnMaxIdleTimeMs   = 500000
 ConnMaxLifetimeMs   = 5000000
 
+# ---------------------------------
+# NacosRegsiter Config
+# see https://githublaohu/nacos-sdk-go/blob/master/README.md
+# see https://githublaohu/nacos-sdk-go/blob/master/README_CN.md
+[NacosRegsiter]
+# [NacosRegsiter.ClientConfig]
+# NamespaceId  = "atom-dev"
+
+# [[NacosRegsiter.ServerConfig]]
+# IpAddr = "127.0.0.1"
+# Port      = 8848
 
 # ---------------------------------
 # Dependence Config

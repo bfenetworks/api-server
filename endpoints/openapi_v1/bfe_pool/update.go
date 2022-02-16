@@ -39,7 +39,7 @@ var _ xreq.Handler = UpdateAction
 // UpdateAction action
 // AUTO GEN BY ctrl, MODIFY AS U NEED
 func UpdateAction(req *http.Request) (interface{}, error) {
-	param, err := product_pool.NewUpsertParam(req)
+	param, err := product_pool.NewUpdateParam(req)
 	if err != nil {
 		return nil, err
 	}
@@ -52,11 +52,14 @@ func UpdateAction(req *http.Request) (interface{}, error) {
 		return nil, xerror.WrapRecordNotExist("Instance Pool")
 	}
 
-	err = container.PoolManager.UpdateBFEPool(req.Context(), one, &icluster_conf.PoolParam{
+	pi := &icluster_conf.PoolInstances{
+		Name:      one.Name,
 		Instances: product_pool.Instancesc2i(param.Instances),
-	})
+	}
+	err = container.PoolInstancesManager.UpdateInstances(req.Context(), one, pi)
+	if err != nil {
+		return nil, err
+	}
 
-	one.Instances = product_pool.Instancesc2i(param.Instances)
-
-	return product_pool.NewOneData(one), err
+	return product_pool.NewOneData(one, pi), err
 }
