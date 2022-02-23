@@ -53,12 +53,12 @@ func (rpps *NacosPoolInstanceStorager) BatchFetchInstances(ctx context.Context, 
 	return m, nil
 }
 
-func (regsiter *NacosPoolInstanceStorager) GetInstance(name string) (*icluster_conf.PoolInstances, error) {
+func (rpps *NacosPoolInstanceStorager) GetInstance(name string) (*icluster_conf.PoolInstances, error) {
 	selectInstancesParam := vo.SelectInstancesParam{
 		ServiceName: name,
 		HealthyOnly: true,
 	}
-	instances, err := regsiter.client.SelectInstances(selectInstancesParam)
+	instances, err := rpps.client.SelectInstances(selectInstancesParam)
 	if err != nil {
 		return nil, err
 	}

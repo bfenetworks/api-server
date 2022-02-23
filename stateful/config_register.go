@@ -15,8 +15,6 @@
 package stateful
 
 import (
-	"fmt"
-
 	"github.com/nacos-group/nacos-sdk-go/clients"
 	"github.com/nacos-group/nacos-sdk-go/clients/naming_client"
 	"github.com/nacos-group/nacos-sdk-go/common/constant"
@@ -31,8 +29,8 @@ type NacosRegisterConfig struct {
 var NacosClient naming_client.INamingClient
 
 func (d *Config) InitNacos() error {
-	if d.NacosRegsiter.ClientConfig.NamespaceId == "" || len(d.NacosRegsiter.ServerConfig) == 0 {
-		fmt.Println("The configuration is not sound and naocs will not be started")
+	if d.NacosRegsiter == nil {
+		AccessLogger.Info("The configuration is not sound and naocs will not be started")
 		return nil
 	}
 	client, err := clients.NewNamingClient(
@@ -41,11 +39,19 @@ func (d *Config) InitNacos() error {
 			ServerConfigs: d.NacosRegsiter.ServerConfig,
 		},
 	)
+
 	if err != nil {
-		msg := fmt.Sprintf("nacos start err - %s", err)
-		fmt.Println("nacos start err :", msg)
 		return err
 	}
+
+	service, err := client.GetService(vo.GetServiceParam{
+		ServiceName: "ping",
+	})
+	if err != nil {
+		return err
+	}
+
+	AccessLogger.Info("nacos start success", service.Name)
 	NacosClient = client
 	return nil
 }

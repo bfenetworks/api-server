@@ -83,7 +83,10 @@ func main() {
 	if err := config.InitDB(); err != nil {
 		stateful.Exit("config.InitDB", err, -1)
 	}
-	config.InitNacos()
+	err := config.InitNacos()
+	if err != nil {
+		stateful.Exit("config.InitNacos", err, -1)
+	}
 	rdb.Init()
 	serverStartUp()
 }

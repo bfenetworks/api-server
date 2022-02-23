@@ -45,7 +45,7 @@ type PoolInstances struct {
 }
 
 const (
-	PoolInstancesTypeRDB int8 = 1
+	PoolInstancesTypeRDB     int8 = 1
 	PoolInstancesTypeNacos int8 = 2
 )
 

@@ -36,8 +36,8 @@ StdOut      = false
 DBName              = "open_bfe"
 Addr                = "127.0.0.1:3306"
 Net                 = "tcp"
-User                = "root"
-Passwd              = "root"
+User                = "{user}"
+Passwd              = "{password}"
 MultiStatements     = true
 MaxAllowedPacket    = 67108864
 ParseTime           = true
@@ -53,9 +53,9 @@ ConnMaxLifetimeMs   = 5000000
 # NacosRegsiter Config
 # see https://githublaohu/nacos-sdk-go/blob/master/README.md
 # see https://githublaohu/nacos-sdk-go/blob/master/README_CN.md
-[NacosRegsiter]
+#[NacosRegsiter]
 # [NacosRegsiter.ClientConfig]
-# NamespaceId  = "atom-dev"
+# NamespaceId  = "{NamespaceId}"
 
 # [[NacosRegsiter.ServerConfig]]
 # IpAddr = "127.0.0.1"

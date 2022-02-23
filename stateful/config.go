@@ -43,7 +43,7 @@ type Config struct {
 	Databases     map[string]*DbConfig     `validate:"dive"`
 	Depends       DependsConfig
 	RunTime       RunTimeConfig
-	NacosRegsiter NacosRegisterConfig
+	NacosRegsiter *NacosRegisterConfig
 	Vars          map[string]string
 	LogDir        string
 	ConfigDir     string
