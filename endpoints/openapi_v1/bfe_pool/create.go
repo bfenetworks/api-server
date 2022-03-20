@@ -63,10 +63,10 @@ func CreateAction(req *http.Request) (interface{}, error) {
 		return nil, err
 	}
 
-	pism, err := container.PoolInstancesManager.BatchFetchInstances(req.Context(), []*icluster_conf.Pool{oneData})
+	manager, err := container.InstancePoolManager.BatchFetchInstances(req.Context(), []*icluster_conf.Pool{oneData})
 	if err != nil {
 		return nil, err
 	}
 
-	return product_pool.NewOneData(oneData, pism[oneData.Name]), nil
+	return product_pool.NewOneData(oneData, manager[oneData.Name]), nil
 }

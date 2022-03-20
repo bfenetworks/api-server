@@ -64,8 +64,8 @@ ConnMaxLifetimeMs   = 50000
 
 # ---------------------------------
 # NacosRegsiter Config
-# see https://githublaohu/nacos-sdk-go/blob/master/README.md
-# see https://githublaohu/nacos-sdk-go/blob/master/README_CN.md
+# see https://github.com/nacos-group/nacos-sdk-go/blob/master/README.md
+# see https://github.com/nacos-group/nacos-sdk-go/blob/master/README_CN.md
 [NacosRegsiter]
 [NacosRegsiter.ClientConfig]
 NamespaceId  = "test-dev"

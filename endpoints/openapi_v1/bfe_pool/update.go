@@ -56,7 +56,7 @@ func UpdateAction(req *http.Request) (interface{}, error) {
 		Name:      one.Name,
 		Instances: product_pool.Instancesc2i(param.Instances),
 	}
-	err = container.PoolInstancesManager.UpdateInstances(req.Context(), one, pi)
+	err = container.InstancePoolManager.UpdateInstances(req.Context(), one, pi)
 	if err != nil {
 		return nil, err
 	}

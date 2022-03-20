@@ -80,12 +80,12 @@ type PoolManager struct {
 	subClusterStorager SubClusterStorager
 	txn                itxn.TxnStorager
 
-	poolInstancesManager *PoolInstancesManager
+	poolInstancesManager *InstancePoolManager
 }
 
 func NewPoolManager(txn itxn.TxnStorager, storager PoolStorager,
 	bfeClusterStorager ibasic.BFEClusterStorager, subClusterStorager SubClusterStorager,
-	poolInstancesManager *PoolInstancesManager) *PoolManager {
+	poolInstancesManager *InstancePoolManager) *PoolManager {
 
 	return &PoolManager{
 		txn:                txn,
@@ -135,7 +135,7 @@ func (rppm *PoolManager) FetchProductPools(ctx context.Context, product *ibasic.
 		})
 		return err
 	})
-	
+
 	return
 }
 

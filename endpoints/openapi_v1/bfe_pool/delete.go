@@ -47,10 +47,10 @@ func DeleteAction(req *http.Request) (interface{}, error) {
 		return nil, err
 	}
 
-	pism, err := container.PoolInstancesManager.BatchFetchInstances(req.Context(), []*icluster_conf.Pool{oldOne})
+	manager, err := container.InstancePoolManager.BatchFetchInstances(req.Context(), []*icluster_conf.Pool{oldOne})
 	if err != nil {
 		return nil, err
 	}
 
-	return product_pool.NewOneData(oldOne, pism[oldOne.Name]), nil
+	return product_pool.NewOneData(oldOne, manager[oldOne.Name]), nil
 }

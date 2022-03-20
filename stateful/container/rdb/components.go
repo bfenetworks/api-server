@@ -7,6 +7,8 @@
 //     http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
+
+
 // distributed under the License is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
@@ -90,7 +92,7 @@ func Init() {
 		container.DomainStoragerSingleton)
 
 	nacosClient, _ := stateful.GetNacosClient()
-	container.PoolInstancesManager = icluster_conf.NewPoolInstancesManager(map[int8]icluster_conf.PoolInstanceStorager{
+	container.InstancePoolManager = icluster_conf.NewPoolInstancesManager(map[int8]icluster_conf.PoolInstanceStorager{
 		icluster_conf.PoolInstancesTypeRDB:   cluster_conf.NewRDBPoolInstanceStorager(stateful.NewBFEDBContext),
 		icluster_conf.PoolInstancesTypeNacos: nacos_cluster_conf.NewNacosPoolInstanceStorager(nacosClient),
 	})
@@ -100,7 +102,7 @@ func Init() {
 		container.ClusterStoragerSingleton,
 		container.SubClusterStoragerSingleton,
 		container.BFEClusterStoragerSingleton,
-		container.PoolInstancesManager,
+		container.InstancePoolManager,
 		container.VersionControlManager,
 		map[string]func(context.Context, *ibasic.Product, *icluster_conf.Cluster) error{
 			"rules": container.RouteRuleManager.ClusterDeleteChecker,
@@ -132,5 +134,5 @@ func Init() {
 		container.PoolStoragerSingleton,
 		container.BFEClusterStoragerSingleton,
 		container.SubClusterStoragerSingleton,
-		container.PoolInstancesManager)
+		container.InstancePoolManager)
 }
