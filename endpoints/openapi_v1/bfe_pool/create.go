@@ -56,7 +56,7 @@ func CreateAction(req *http.Request) (interface{}, error) {
 	oneData, err := container.PoolManager.CreateBFEPool(req.Context(), &icluster_conf.PoolParam{
 		Name: param.Name,
 		Type: param.Type,
-	}, &icluster_conf.PoolInstances{
+	}, &icluster_conf.InstancesPool{
 		Instances: product_pool.Instancesc2i(param.Instances),
 	})
 	if err != nil {

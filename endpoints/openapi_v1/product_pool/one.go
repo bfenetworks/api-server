@@ -48,7 +48,7 @@ type OneData struct {
 	Instances []*Instance `json:"instances" uri:"instances"`
 }
 
-func NewOneData(pool *icluster_conf.Pool, pis *icluster_conf.PoolInstances) *OneData {
+func NewOneData(pool *icluster_conf.Pool, pis *icluster_conf.InstancesPool) *OneData {
 	is := []*Instance{}
 	if pis != nil {
 		for _, one := range pis.Instances {

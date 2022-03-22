@@ -39,48 +39,48 @@ func (i *Instance) IPWithPort() string {
 	return fmt.Sprintf("%s:%d", i.IP, i.Port)
 }
 
-type PoolInstances struct {
+type InstancesPool struct {
 	Name      string
 	Instances []Instance
 }
 
 const (
-	PoolInstancesTypeRDB   int8 = 1
-	PoolInstancesTypeNacos int8 = 2
+	InstancesPoolTypeRDB   int8 = 1
+	InstancesPoolTypeNacos int8 = 2
 )
 
-type PoolInstanceStorager interface {
-	UpdateInstances(context.Context, *Pool, *PoolInstances) error
+type InstancePoolStorager interface {
+	UpdateInstances(context.Context, *Pool, *InstancesPool) error
 
-	BatchFetchInstances(context.Context, []*Pool) (map[string]*PoolInstances, error)
+	BatchFetchInstances(context.Context, []*Pool) (map[string]*InstancesPool, error)
 }
 
 type InstancePoolManager struct {
-	poolInstanceStorages map[int8]PoolInstanceStorager
+	instancePoolStorages map[int8]InstancePoolStorager
 }
 
-func NewPoolInstancesManager(poolInstanceStorages map[int8]PoolInstanceStorager) *InstancePoolManager {
+func NewInstancesPoolManager(instancePoolStorages map[int8]InstancePoolStorager) *InstancePoolManager {
 	return &InstancePoolManager{
-		poolInstanceStorages: poolInstanceStorages,
+		instancePoolStorages: instancePoolStorages,
 	}
 }
 
-func (pim *InstancePoolManager) BatchFetchInstances(ctx context.Context, pools []*Pool) (map[string]*PoolInstances, error) {
-	type2PoolInstancesList := map[int8][]*Pool{}
+func (pim *InstancePoolManager) BatchFetchInstances(ctx context.Context, pools []*Pool) (map[string]*InstancesPool, error) {
+	type2InstancesPoolList := map[int8][]*Pool{}
 	for _, one := range pools {
-		type2PoolInstancesList[one.Type] = append(type2PoolInstancesList[one.Type], one)
+		type2InstancesPoolList[one.Type] = append(type2InstancesPoolList[one.Type], one)
 	}
 
-	for typ := range type2PoolInstancesList {
-		_, ok := pim.poolInstanceStorages[typ]
+	for typ := range type2InstancesPoolList {
+		_, ok := pim.instancePoolStorages[typ]
 		if !ok {
 			return nil, xerror.WrapModelErrorWithMsg("Type %d not register Storager", typ)
 		}
 	}
 
-	rst := map[string]*PoolInstances{}
-	for typ, pisList := range type2PoolInstancesList {
-		storager := pim.poolInstanceStorages[typ]
+	rst := map[string]*InstancesPool{}
+	for typ, pisList := range type2InstancesPoolList {
+		storager := pim.instancePoolStorages[typ]
 		r, err := storager.BatchFetchInstances(ctx, pisList)
 		if err != nil {
 			return nil, err
@@ -94,8 +94,8 @@ func (pim *InstancePoolManager) BatchFetchInstances(ctx context.Context, pools [
 	return rst, nil
 }
 
-func (pim *InstancePoolManager) UpdateInstances(ctx context.Context, pool *Pool, pis *PoolInstances) error {
-	storager, ok := pim.poolInstanceStorages[pool.Type]
+func (pim *InstancePoolManager) UpdateInstances(ctx context.Context, pool *Pool, pis *InstancesPool) error {
+	storager, ok := pim.instancePoolStorages[pool.Type]
 	if !ok {
 		return xerror.WrapModelErrorWithMsg("Type %d not register Storager", pool.Type)
 	}

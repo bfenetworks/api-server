@@ -58,8 +58,8 @@ func (p *Pool) SetDefaultInstances(is []Instance) {
 	p.instances = is
 }
 
-func (p *Pool) GetDefaultInstances() *PoolInstances {
-	return &PoolInstances{
+func (p *Pool) GetDefaultInstances() *InstancesPool {
+	return &InstancesPool{
 		Name:      p.Name,
 		Instances: p.instances,
 	}
@@ -209,12 +209,12 @@ func (rppm *PoolManager) DeleteProductPool(ctx context.Context, product *ibasic.
 	return
 }
 
-func (rppm *PoolManager) CreateBFEPool(ctx context.Context, pool *PoolParam, pis *PoolInstances) (one *Pool, err error) {
+func (rppm *PoolManager) CreateBFEPool(ctx context.Context, pool *PoolParam, pis *InstancesPool) (one *Pool, err error) {
 	pool.Tag = &PoolTagBFE
 	return rppm.CreateProductPool(ctx, ibasic.BuildinProduct, pool, pis)
 }
 
-func (rppm *PoolManager) CreateProductPool(ctx context.Context, product *ibasic.Product, pool *PoolParam, pis *PoolInstances) (one *Pool, err error) {
+func (rppm *PoolManager) CreateProductPool(ctx context.Context, product *ibasic.Product, pool *PoolParam, pis *InstancesPool) (one *Pool, err error) {
 	var pN string
 	pN, err = poolNameJudger(product.Name, *pool.Name)
 	if err != nil {

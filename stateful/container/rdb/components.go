@@ -8,7 +8,6 @@
 //
 // Unless required by applicable law or agreed to in writing, software
 
-
 // distributed under the License is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
@@ -92,9 +91,9 @@ func Init() {
 		container.DomainStoragerSingleton)
 
 	nacosClient, _ := stateful.GetNacosClient()
-	container.InstancePoolManager = icluster_conf.NewPoolInstancesManager(map[int8]icluster_conf.PoolInstanceStorager{
-		icluster_conf.PoolInstancesTypeRDB:   cluster_conf.NewRDBPoolInstanceStorager(stateful.NewBFEDBContext),
-		icluster_conf.PoolInstancesTypeNacos: nacos_cluster_conf.NewNacosPoolInstanceStorager(nacosClient),
+	container.InstancePoolManager = icluster_conf.NewInstancesPoolManager(map[int8]icluster_conf.InstancePoolStorager{
+		icluster_conf.InstancesPoolTypeRDB:   cluster_conf.NewRDBInstancePoolStorager(stateful.NewBFEDBContext),
+		icluster_conf.InstancesPoolTypeNacos: nacos_cluster_conf.NewNacosInstancePoolStorager(nacosClient),
 	})
 
 	container.ClusterManager = icluster_conf.NewClusterManager(
