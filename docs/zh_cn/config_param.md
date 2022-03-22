@@ -9,7 +9,7 @@
 
 - api_server.toml: API Server 模块启动必须的参数
 - nav_tree.toml: 导航栏相关配置
-- i18n/: 国际化相关的配置，主要是错误提示信息等内容
+- i18n/: 国际化相关的配置
 
 下面逐个进行说明。
 
@@ -135,8 +135,8 @@ Dependence Config 指定API Server的部分依赖文件的路径。
 | ----------- | ------------------------------------------------------------ |
 | NavTreeFile | String<br/>导航栏相关的配置文件路径                          |
 | I18nDir     | String<br/>国际化相关的配置文件路径                          |
-| UIIcon      | String<br/>自定义Dashboard上Icon的文件路径<br>Dashboard页面默认使用BFE Icon。需要时可以在此处指定自定义的Icon文件路径 |
-| UILogo      | String<br>自定义Dashboard上Logo的文件路径<br>Dashboard页面默认使用BFE Logo。需要时可以在此处指定自定义的Logo文件路径 |
+| UIIcon      | String<br/>自定义Dashboard上Icon的文件路径<br>Dashboard页面默认使用BFE的Icon。需要时可以在此处指定自定义的Icon文件路径 |
+| UILogo      | String<br>自定义Dashboard上Logo的文件路径<br>Dashboard页面默认使用BFE的Logo。需要时可以在此处指定自定义的Logo文件路径 |
 
 注：文件路径中，可以用 ${conf_dir} 表示配置文件根路径。
 
@@ -161,7 +161,7 @@ UILogo      = "https://raw.githubusercontent.com/bfenetworks/bfe/develop/docs/im
 
 | 配置项            | 描述                                                         |
 | ----------------- | ------------------------------------------------------------ |
-| SkipTokenValidate | Bool<br>是否跳过Token验证<br>建议设为False<br>若设为True，可以使用"Skip {role_name}"作为authorization header来调用API，例如：Headers[Authorization] = "Skip System"<br> |
+| SkipTokenValidate | Bool<br>是否跳过Token验证<br>建议设为"false"<br>若设为"true"，可以使用"Skip {role_name}"作为authorization header来调用API，例如：Headers[Authorization] = "Skip System"<br> |
 | RecordSQL         | Bool<br>是否保存数据库操作日志                               |
 | SessionExpireDay  | Int<br>会话过期时间，单位为天                                |
 | StaticFilePath    | String<br>静态文件路径。对API请求进行动态路由失败时，若该路径下有静态文件，则返回静态文件 |
@@ -189,7 +189,7 @@ Debug               = false
 
 ## nav_tree.toml 
 
-该文件用来控制Dashboard的导航栏。
+该配置文件用来控制Dashboard的导航栏。
 
 如果想在导航栏中关闭某些模块，在该文件中将模块对应的内容注释掉即可。
 
