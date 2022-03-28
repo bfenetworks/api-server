@@ -1,5 +1,5 @@
 # 配置文件说明
-本文讲解如何配置 API Server，让 API Server可以正常运行。
+本文讲解如何通过配置文件，配置 API Server。
 
 ## 概述
 
@@ -11,11 +11,11 @@
 - nav_tree.toml: 导航栏相关配置
 - i18n/: 国际化相关的配置
 
-下面逐个进行说明。
-
 ## api_server.toml 
 
-该文件提供API Server的启动参数，分为下面几部分，分别说明。
+该文件用于配置API Server的启动参数。
+
+其中的配置可分为若干部分，下面分别进行说明。
 
 ### API Server Config
 
