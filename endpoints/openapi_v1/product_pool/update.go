@@ -74,7 +74,7 @@ func UpdateAction(req *http.Request) (interface{}, error) {
 		return nil, xerror.WrapRecordNotExist("Instance Pool")
 	}
 
-	pi := &icluster_conf.InstancesPool{
+	pi := &icluster_conf.InstancePool{
 		Name:      one.Name,
 		Instances: Instancesc2i(param.Instances),
 	}

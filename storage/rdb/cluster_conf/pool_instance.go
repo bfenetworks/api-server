@@ -37,7 +37,7 @@ func NewRDBInstancePoolStorager(dbCtxFactory lib.DBContextFactory) *RDBInstanceP
 var _ icluster_conf.InstancePoolStorager = &RDBInstancePoolStorager{}
 
 func (rpps *RDBInstancePoolStorager) UpdateInstances(ctx context.Context, pool *icluster_conf.Pool,
-	pis *icluster_conf.InstancesPool) error {
+	pis *icluster_conf.InstancePool) error {
 
 	var detail *string
 	if pis.Instances != nil {
@@ -63,9 +63,9 @@ func (rpps *RDBInstancePoolStorager) UpdateInstances(ctx context.Context, pool *
 }
 
 func (rpps *RDBInstancePoolStorager) BatchFetchInstances(ctx context.Context,
-	poolList []*icluster_conf.Pool) (map[string]*icluster_conf.InstancesPool, error) {
+	poolList []*icluster_conf.Pool) (map[string]*icluster_conf.InstancePool, error) {
 
-	m := map[string]*icluster_conf.InstancesPool{}
+	m := map[string]*icluster_conf.InstancePool{}
 	for _, one := range poolList {
 		// because of RDBPoolStorager.FetchPools will get pool list
 		// it's trick

@@ -34,13 +34,13 @@ func NewNacosInstancePoolStorager(client naming_client.INamingClient) *NacosPool
 	}
 }
 
-func (rpps *NacosPoolInstanceStorager) UpdateInstances(ctx context.Context, pool *icluster_conf.Pool, pis *icluster_conf.InstancesPool) error {
+func (rpps *NacosPoolInstanceStorager) UpdateInstances(ctx context.Context, pool *icluster_conf.Pool, pis *icluster_conf.InstancePool) error {
 
 	return nil
 }
 
-func (rpps *NacosPoolInstanceStorager) BatchFetchInstances(ctx context.Context, poolList []*icluster_conf.Pool) (map[string]*icluster_conf.InstancesPool, error) {
-	m := map[string]*icluster_conf.InstancesPool{}
+func (rpps *NacosPoolInstanceStorager) BatchFetchInstances(ctx context.Context, poolList []*icluster_conf.Pool) (map[string]*icluster_conf.InstancePool, error) {
+	m := map[string]*icluster_conf.InstancePool{}
 	for _, one := range poolList {
 		pi, err := rpps.GetInstance(one.Name[strings.Index(one.Name, ".")+1:])
 		pi.Name = one.Name
@@ -53,7 +53,7 @@ func (rpps *NacosPoolInstanceStorager) BatchFetchInstances(ctx context.Context, 
 	return m, nil
 }
 
-func (rpps *NacosPoolInstanceStorager) GetInstance(name string) (*icluster_conf.InstancesPool, error) {
+func (rpps *NacosPoolInstanceStorager) GetInstance(name string) (*icluster_conf.InstancePool, error) {
 	selectInstancesParam := vo.SelectInstancesParam{
 		ServiceName: name,
 		HealthyOnly: true,
@@ -67,7 +67,7 @@ func (rpps *NacosPoolInstanceStorager) GetInstance(name string) (*icluster_conf.
 		bfeInstances[index] = newBFEInstance(instance)
 	}
 
-	return &icluster_conf.InstancesPool{Name: name, Instances: bfeInstances}, nil
+	return &icluster_conf.InstancePool{Name: name, Instances: bfeInstances}, nil
 }
 
 func newBFEInstance(instance model.Instance) icluster_conf.Instance {

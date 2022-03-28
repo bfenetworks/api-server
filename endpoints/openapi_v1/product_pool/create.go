@@ -47,7 +47,7 @@ type CreateParam struct {
 // AUTO GEN BY ctrl, MODIFY AS U NEED
 func NewCreateParam(req *http.Request) (*CreateParam, error) {
 	param := &CreateParam{
-		Type: lib.PInt8(icluster_conf.InstancesPoolTypeRDB),
+		Type: lib.PInt8(icluster_conf.InstancePoolTypeRDB),
 	}
 	err := xreq.Bind(req, param)
 	if err != nil {
@@ -116,7 +116,7 @@ func CreateProcess(req *http.Request, product *ibasic.Product, param *CreatePara
 	return container.PoolManager.CreateProductPool(req.Context(), product, &icluster_conf.PoolParam{
 		Name: param.Name,
 		Type: param.Type,
-	}, &icluster_conf.InstancesPool{
+	}, &icluster_conf.InstancePool{
 		Instances: Instancesc2i(param.Instances),
 	})
 }

@@ -91,9 +91,9 @@ func Init() {
 		container.DomainStoragerSingleton)
 
 	nacosClient, _ := stateful.GetNacosClient()
-	container.InstancePoolManager = icluster_conf.NewInstancesPoolManager(map[int8]icluster_conf.InstancePoolStorager{
-		icluster_conf.InstancesPoolTypeRDB:   cluster_conf.NewRDBInstancePoolStorager(stateful.NewBFEDBContext),
-		icluster_conf.InstancesPoolTypeNacos: nacos_cluster_conf.NewNacosInstancePoolStorager(nacosClient),
+	container.InstancePoolManager = icluster_conf.NewInstancePoolManager(map[int8]icluster_conf.InstancePoolStorager{
+		icluster_conf.InstancePoolTypeRDB:   cluster_conf.NewRDBInstancePoolStorager(stateful.NewBFEDBContext),
+		icluster_conf.InstancePoolTypeNacos: nacos_cluster_conf.NewNacosInstancePoolStorager(nacosClient),
 	})
 
 	container.ClusterManager = icluster_conf.NewClusterManager(
