@@ -21,11 +21,11 @@
 
 API Server的关键配置。
 
-| 配置项            | 描述                                              |
-| ----------------- | ------------------------------------------------- |
-| ServerPort        | Int<br>API Server的服务端口                       |
-| GracefulTimeOutMs | Int<br>API Server关闭时的优雅退出时间，单位为毫秒 |
-| MonitorPort       | Int<br>监控端口                                   |
+| 配置项              | 描述                                              |
+| ------------------- | ------------------------------------------------- |
+| ServerPort          | Int<br>API Server的服务端口                       |
+| GracefulTimeoutInMs | Int<br>API Server关闭时的优雅退出时间，单位为毫秒 |
+| MonitorPort         | Int<br>监控端口                                   |
 
 示例：
 
@@ -34,8 +34,8 @@ API Server的关键配置。
 [Server]
 # server port
 ServerPort          = 8183
-# server graceful exit timeout
-GracefulTimeOutMs   = 5000
+# server graceful exit timeout, in ms
+GracefulTimeoutInMs = 5000
 # monitor port, don't start monitor server if less than 0
 MonitorPort         = 8284
 ```
@@ -52,7 +52,7 @@ API Server的日志相关配置。这里的日志指API Server的access log（�
 | LogName     | String<br>日志名称                                           |
 | LogLevel    | String<br>日志级别<br>合法值："DEBUG", "TRACE", "INFO", "WARNING", "ERROR", "CRITICAL" |
 | RotateWhen  | String<br/>日志轮转时间<br/>合法值：包括"M","H","D","MIDNIGHT"<br>  "M" 表示每分钟轮转<br>   "H" 表示每小时轮转<br>   "D" 表示每天轮转<br>   "MIDNIGHT" 表示每天0点整轮转 |
-| BackupCount | Int<br>日志删除前轮转次数，即最大的日志存储数量              |
+| BackupCount | Int<br>最大日志文件备份数<br>注：每次日志轮转都会产生一个新的日志文件。若日志文件数超过了BackupCount，轮转时会删除最老的日志文件 |
 | Format      | String<br>日志各字段记录和排列的格式。支持的字段包括：<br>  %T - Time (15:04:05 MST)<br>  %t - Time (15:04)<br>  %D - Date (2006/01/02)<br>  %d - Date (01/02/06)<br>  %L - Level<br>  %P - Pid of process<br>  %S - Source<br>  %M - Message |
 | StdOut      | Bool<br>是否输出日志到StdOut                                 |
 
@@ -101,8 +101,8 @@ Database Config用于指定go-sql-drive所使用的配置，配置参数的具�
 | Driver               | String<br>数据库驱动类型<br>当前支持："mysql"                |
 | MaxOpenConns         | Int<br>最大活跃连接数                                        |
 | MaxIdleConns         | Int<br>最大空闲连接数                                        |
-| ConnMaxIdleTimeMs    | Int<br>连接最大空闲时间，单位为毫秒                          |
-| ConnMaxLifetimeMs    | Int<br>连接最大生命期，单位为毫秒                            |
+| ConnMaxIdleTimeInMs  | Int<br>连接最大空闲时间，单位为毫秒                          |
+| ConnMaxLifetimeInMs  | Int<br>连接最大生命期，单位为毫秒                            |
 
 示例：
 
@@ -123,8 +123,8 @@ AllowNativePasswords= true
 Driver              = "mysql"
 MaxOpenConns        = 100
 MaxIdleConns        = 100
-ConnMaxIdleTimeMs   = 50000
-ConnMaxLifetimeMs   = 50000
+ConnMaxIdleTimeInMs = 50000
+ConnMaxLifetimeInMs = 50000
 ```
 
 ### Dependence Config
@@ -159,13 +159,13 @@ UILogo      = "https://raw.githubusercontent.com/bfenetworks/bfe/develop/docs/im
 
 运行时配置。
 
-| 配置项            | 描述                                                         |
-| ----------------- | ------------------------------------------------------------ |
-| SkipTokenValidate | Bool<br>是否跳过Token验证<br>建议设为"false"<br>若设为"true"，可以使用"Skip {role_name}"作为authorization header来调用API，例如：Headers[Authorization] = "Skip System"<br> |
-| RecordSQL         | Bool<br>是否保存数据库操作日志                               |
-| SessionExpireDay  | Int<br>会话过期时间，单位为天                                |
-| StaticFilePath    | String<br>静态文件路径。对API请求进行动态路由失败时，若该路径下有静态文件，则返回静态文件 |
-| Debug             | Bool<br>是否在API的响应中包含Debug信息                       |
+| 配置项             | 描述                                                         |
+| ------------------ | ------------------------------------------------------------ |
+| SkipTokenValidate  | Bool<br>是否跳过Token验证<br>建议设为"false"<br>若设为"true"，可以使用"Skip {role_name}"作为authorization header来调用API，例如：Headers[Authorization] = "Skip System"<br> |
+| RecordSQL          | Bool<br>是否保存数据库操作日志                               |
+| SessionExpireInDay | Int<br>会话过期时间，单位为天                                |
+| StaticFilePath     | String<br>静态文件路径。对API请求进行动态路由失败时，若该路径下有静态文件，则返回静态文件 |
+| Debug              | Bool<br>是否在API的响应中包含Debug信息                       |
 
 示例：
 
@@ -178,8 +178,8 @@ UILogo      = "https://raw.githubusercontent.com/bfenetworks/bfe/develop/docs/im
 SkipTokenValidate   = false
 # sql will be record to log file when this option be opend
 RecordSQL           = false
-# how long use must login again
-SessionExpireDay    = 10
+# how long user must login again. in days
+SessionExpireInDay  = 10
 # static file path, when dynamic router not be matched, static file will be return if found
 StaticFilePath      = "./static"
 # debug info will be add to response when this option be opend
