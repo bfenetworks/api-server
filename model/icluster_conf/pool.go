@@ -16,7 +16,6 @@ package icluster_conf
 
 import (
 	"context"
-	"fmt"
 	"strings"
 
 	"github.com/bfenetworks/api-server/lib/xerror"
@@ -40,36 +39,30 @@ type PoolParam struct {
 	ID        *int64
 	Name      *string
 	ProductID *int64
-	Instances []Instance
-
-	Tag *int8
+	Type      *int8
+	Tag       *int8
 }
 
 type Pool struct {
-	ID        int64
-	Name      string
-	Ready     bool
-	Product   *ibasic.Product
-	Instances []Instance
-	Tag       int8
+	ID      int64
+	Name    string
+	Type    int8
+	Ready   bool
+	Tag     int8
+	Product *ibasic.Product
+
+	instances []Instance
 }
 
-type Instance struct {
-	HostName string            `json:"Name"`
-	IP       string            `json:"Addr"`
-	Port     int               `json:"Port"`
-	Ports    map[string]int    `json:"Ports,omitempty"`
-	Tags     map[string]string `json:"tags,omitempty"`
-	Weight   int64             `json:"Weight"`
-	Disable  bool              `json:"Disable"`
+func (p *Pool) SetDefaultInstances(is []Instance) {
+	p.instances = is
 }
 
-func (i *Instance) IPWithPort() string {
-	if i.Port == 0 {
-		i.Port = i.Ports["Default"]
+func (p *Pool) GetDefaultInstances() *InstancePool {
+	return &InstancePool{
+		Name:      p.Name,
+		Instances: p.instances,
 	}
-
-	return fmt.Sprintf("%s:%d", i.IP, i.Port)
 }
 
 type PoolStorager interface {
@@ -86,16 +79,21 @@ type PoolManager struct {
 	bfeClusterStorager ibasic.BFEClusterStorager
 	subClusterStorager SubClusterStorager
 	txn                itxn.TxnStorager
+
+	poolInstancesManager *InstancePoolManager
 }
 
 func NewPoolManager(txn itxn.TxnStorager, storager PoolStorager,
-	bfeClusterStorager ibasic.BFEClusterStorager, subClusterStorager SubClusterStorager) *PoolManager {
+	bfeClusterStorager ibasic.BFEClusterStorager, subClusterStorager SubClusterStorager,
+	poolInstancesManager *InstancePoolManager) *PoolManager {
 
 	return &PoolManager{
 		txn:                txn,
 		storager:           storager,
 		bfeClusterStorager: bfeClusterStorager,
 		subClusterStorager: subClusterStorager,
+
+		poolInstancesManager: poolInstancesManager,
 	}
 }
 
@@ -211,12 +209,12 @@ func (rppm *PoolManager) DeleteProductPool(ctx context.Context, product *ibasic.
 	return
 }
 
-func (rppm *PoolManager) CreateBFEPool(ctx context.Context, pool *PoolParam) (one *Pool, err error) {
+func (rppm *PoolManager) CreateBFEPool(ctx context.Context, pool *PoolParam, pis *InstancePool) (one *Pool, err error) {
 	pool.Tag = &PoolTagBFE
-	return rppm.CreateProductPool(ctx, ibasic.BuildinProduct, pool)
+	return rppm.CreateProductPool(ctx, ibasic.BuildinProduct, pool, pis)
 }
 
-func (rppm *PoolManager) CreateProductPool(ctx context.Context, product *ibasic.Product, pool *PoolParam) (one *Pool, err error) {
+func (rppm *PoolManager) CreateProductPool(ctx context.Context, product *ibasic.Product, pool *PoolParam, pis *InstancePool) (one *Pool, err error) {
 	var pN string
 	pN, err = poolNameJudger(product.Name, *pool.Name)
 	if err != nil {
@@ -237,6 +235,13 @@ func (rppm *PoolManager) CreateProductPool(ctx context.Context, product *ibasic.
 		}
 
 		one, err = rppm.storager.CreatePool(ctx, product, pool)
+		if err != nil {
+			return err
+		}
+
+		if pis != nil {
+			err = rppm.poolInstancesManager.UpdateInstances(ctx, one, pis)
+		}
 		return err
 	})
 

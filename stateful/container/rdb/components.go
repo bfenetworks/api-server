@@ -7,6 +7,7 @@
 //     http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
+
 // distributed under the License is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
@@ -25,6 +26,7 @@ import (
 	"github.com/bfenetworks/api-server/model/iversion_control"
 	"github.com/bfenetworks/api-server/stateful"
 	"github.com/bfenetworks/api-server/stateful/container"
+	nacos_cluster_conf "github.com/bfenetworks/api-server/storage/nacos/cluster_conf"
 	"github.com/bfenetworks/api-server/storage/rdb/auth"
 	"github.com/bfenetworks/api-server/storage/rdb/basic"
 	"github.com/bfenetworks/api-server/storage/rdb/cluster_conf"
@@ -88,11 +90,18 @@ func Init() {
 		container.VersionControlManager,
 		container.DomainStoragerSingleton)
 
+	nacosClient, _ := stateful.GetNacosClient()
+	container.InstancePoolManager = icluster_conf.NewInstancePoolManager(map[int8]icluster_conf.InstancePoolStorager{
+		icluster_conf.InstancePoolTypeRDB:   cluster_conf.NewRDBInstancePoolStorager(stateful.NewBFEDBContext),
+		icluster_conf.InstancePoolTypeNacos: nacos_cluster_conf.NewNacosInstancePoolStorager(nacosClient),
+	})
+
 	container.ClusterManager = icluster_conf.NewClusterManager(
 		container.TxnStoragerSingleton,
 		container.ClusterStoragerSingleton,
 		container.SubClusterStoragerSingleton,
 		container.BFEClusterStoragerSingleton,
+		container.InstancePoolManager,
 		container.VersionControlManager,
 		map[string]func(context.Context, *ibasic.Product, *icluster_conf.Cluster) error{
 			"rules": container.RouteRuleManager.ClusterDeleteChecker,
@@ -123,5 +132,6 @@ func Init() {
 		container.TxnStoragerSingleton,
 		container.PoolStoragerSingleton,
 		container.BFEClusterStoragerSingleton,
-		container.SubClusterStoragerSingleton)
+		container.SubClusterStoragerSingleton,
+		container.InstancePoolManager)
 }

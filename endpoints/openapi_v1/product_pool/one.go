@@ -48,16 +48,18 @@ type OneData struct {
 	Instances []*Instance `json:"instances" uri:"instances"`
 }
 
-func NewOneData(pool *icluster_conf.Pool) *OneData {
+func NewOneData(pool *icluster_conf.Pool, pis *icluster_conf.InstancePool) *OneData {
 	is := []*Instance{}
-	for _, one := range pool.Instances {
-		is = append(is, &Instance{
-			Hostname: one.HostName,
-			IP:       one.IP,
-			Weight:   one.Weight,
-			Ports:    one.Ports,
-			Tags:     one.Tags,
-		})
+	if pis != nil {
+		for _, one := range pis.Instances {
+			is = append(is, &Instance{
+				Hostname: one.HostName,
+				IP:       one.IP,
+				Weight:   one.Weight,
+				Ports:    one.Ports,
+				Tags:     one.Tags,
+			})
+		}
 	}
 
 	return &OneData{
@@ -105,5 +107,9 @@ func OneAction(req *http.Request) (interface{}, error) {
 		return nil, xerror.WrapRecordNotExist("Instance Pool")
 	}
 
-	return NewOneData(one), nil
+	manager, err := container.InstancePoolManager.BatchFetchInstances(req.Context(), []*icluster_conf.Pool{one})
+	if err != nil {
+		return nil, err
+	}
+	return NewOneData(one, manager[one.Name]), nil
 }

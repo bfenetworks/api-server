@@ -62,6 +62,18 @@ MaxIdleConns        = 100
 ConnMaxIdleTimeMs   = 50000
 ConnMaxLifetimeMs   = 50000
 
+# ---------------------------------
+# NacosRegsiter Config
+# see https://github.com/nacos-group/nacos-sdk-go/blob/master/README.md
+# see https://github.com/nacos-group/nacos-sdk-go/blob/master/README_CN.md
+[NacosRegsiter]
+[NacosRegsiter.ClientConfig]
+NamespaceId  = "test-dev"
+
+[[NacosRegsiter.ServerConfig]]
+IpAddr = "127.0.0.1"
+Port      = 8848
+
 
 # ---------------------------------
 # Dependence Config

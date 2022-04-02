@@ -21,6 +21,7 @@ import (
 	"github.com/bfenetworks/api-server/lib/xerror"
 	"github.com/bfenetworks/api-server/lib/xreq"
 	"github.com/bfenetworks/api-server/model/iauth"
+	"github.com/bfenetworks/api-server/model/icluster_conf"
 	"github.com/bfenetworks/api-server/stateful/container"
 )
 
@@ -51,6 +52,10 @@ func OneAction(req *http.Request) (interface{}, error) {
 		return nil, xerror.WrapRecordNotExist("Instance Pool")
 	}
 
-	return product_pool.NewOneData(one), nil
+	manager, err := container.InstancePoolManager.BatchFetchInstances(req.Context(), []*icluster_conf.Pool{one})
+	if err != nil {
+		return nil, err
+	}
+	return product_pool.NewOneData(one, manager[one.Name]), nil
 
 }

@@ -51,4 +51,5 @@ var (
 	AuthenticateManager   *iauth.AuthenticateManager
 	AuthorizeManager      *iauth.AuthorizeManager
 	PoolManager           *icluster_conf.PoolManager
+	InstancePoolManager   *icluster_conf.InstancePoolManager
 )

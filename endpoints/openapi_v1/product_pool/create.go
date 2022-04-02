@@ -18,6 +18,7 @@ import (
 	"net/http"
 	"strings"
 
+	"github.com/bfenetworks/api-server/lib"
 	"github.com/bfenetworks/api-server/lib/xerror"
 	"github.com/bfenetworks/api-server/lib/xreq"
 	"github.com/bfenetworks/api-server/model/iauth"
@@ -25,13 +26,6 @@ import (
 	"github.com/bfenetworks/api-server/model/icluster_conf"
 	"github.com/bfenetworks/api-server/stateful/container"
 )
-
-// UpsertParam Request Param
-// AUTO GEN BY ctrl, MODIFY AS U NEED
-type UpsertParam struct {
-	Name      *string     `json:"name" uri:"instance_pool_name" validate:"required,min=2"`
-	Instances []*Instance `json:"instances" uri:"instances" validate:"min=1,dive"`
-}
 
 // CreateRoute route
 // AUTO GEN BY ctrl, MODIFY AS U NEED
@@ -42,9 +36,19 @@ var CreateEndpoint = &xreq.Endpoint{
 	Authorizer: iauth.FAP(iauth.FeatureProductPool, iauth.ActionCreate),
 }
 
+// CreateParam Request Param
 // AUTO GEN BY ctrl, MODIFY AS U NEED
-func NewUpsertParam(req *http.Request) (*UpsertParam, error) {
-	param := &UpsertParam{}
+type CreateParam struct {
+	Name      *string     `json:"name" validate:"required,min=2"`
+	Type      *int8       `json:"type" validate:"oneof=1"`
+	Instances []*Instance `json:"instances" validate:"min=1,dive"`
+}
+
+// AUTO GEN BY ctrl, MODIFY AS U NEED
+func NewCreateParam(req *http.Request) (*CreateParam, error) {
+	param := &CreateParam{
+		Type: lib.PInt8(icluster_conf.InstancePoolTypeRDB),
+	}
 	err := xreq.Bind(req, param)
 	if err != nil {
 		return nil, err
@@ -58,7 +62,7 @@ var _ xreq.Handler = CreateAction
 // CreateAction action
 // AUTO GEN BY ctrl, MODIFY AS U NEED
 func CreateAction(req *http.Request) (interface{}, error) {
-	param, err := NewUpsertParam(req)
+	param, err := NewCreateParam(req)
 	if err != nil {
 		return nil, err
 	}
@@ -80,7 +84,12 @@ func CreateAction(req *http.Request) (interface{}, error) {
 		return nil, err
 	}
 
-	return NewOneData(oneData), nil
+	manager, err := container.InstancePoolManager.BatchFetchInstances(req.Context(), []*icluster_conf.Pool{oneData})
+	if err != nil {
+		return nil, err
+	}
+
+	return NewOneData(oneData, manager[oneData.Name]), nil
 }
 
 func Instancesc2i(is []*Instance) []icluster_conf.Instance {
@@ -103,9 +112,11 @@ func Instancesc2i(is []*Instance) []icluster_conf.Instance {
 	return rst
 }
 
-func CreateProcess(req *http.Request, product *ibasic.Product, param *UpsertParam) (*icluster_conf.Pool, error) {
+func CreateProcess(req *http.Request, product *ibasic.Product, param *CreateParam) (*icluster_conf.Pool, error) {
 	return container.PoolManager.CreateProductPool(req.Context(), product, &icluster_conf.PoolParam{
-		Name:      param.Name,
+		Name: param.Name,
+		Type: param.Type,
+	}, &icluster_conf.InstancePool{
 		Instances: Instancesc2i(param.Instances),
 	})
 }

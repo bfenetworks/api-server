@@ -236,6 +236,7 @@ func ClusterList2MapByID(list []*Cluster) map[int64]*Cluster {
 
 func NewClusterManager(txn itxn.TxnStorager, storager ClusterStorager,
 	subClusterStorager SubClusterStorager, bfeClusterStorager ibasic.BFEClusterStorager,
+	poolInstancesManager *InstancePoolManager,
 	versionControlManager *iversion_control.VersionControlManager,
 	deleteCheckers map[string]func(context.Context, *ibasic.Product, *Cluster) error) *ClusterManager {
 
@@ -244,6 +245,7 @@ func NewClusterManager(txn itxn.TxnStorager, storager ClusterStorager,
 		storager:              storager,
 		subClusterStorager:    subClusterStorager,
 		bfeClusterStorager:    bfeClusterStorager,
+		poolInstancesManager:  poolInstancesManager,
 		versionControlManager: versionControlManager,
 
 		deleteCheckers: deleteCheckers,
@@ -266,6 +268,7 @@ type ClusterManager struct {
 	subClusterStorager SubClusterStorager
 	bfeClusterStorager ibasic.BFEClusterStorager
 
+	poolInstancesManager  *InstancePoolManager
 	versionControlManager *iversion_control.VersionControlManager
 
 	deleteCheckers map[string]func(context.Context, *ibasic.Product, *Cluster) error

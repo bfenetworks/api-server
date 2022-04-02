@@ -20,6 +20,7 @@ import (
 	"github.com/bfenetworks/api-server/lib/xreq"
 	"github.com/bfenetworks/api-server/model/iauth"
 	"github.com/bfenetworks/api-server/model/ibasic"
+	"github.com/bfenetworks/api-server/model/icluster_conf"
 	"github.com/bfenetworks/api-server/stateful/container"
 )
 
@@ -52,5 +53,10 @@ func DeleteAction(req *http.Request) (interface{}, error) {
 		return nil, err
 	}
 
-	return NewOneData(oldOne), nil
+	manager, err := container.InstancePoolManager.BatchFetchInstances(req.Context(), []*icluster_conf.Pool{oldOne})
+	if err != nil {
+		return nil, err
+	}
+
+	return NewOneData(oldOne, manager[oldOne.Name]), nil
 }

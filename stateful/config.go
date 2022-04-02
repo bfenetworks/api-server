@@ -38,15 +38,15 @@ type RunTimeConfig struct {
 }
 
 type Config struct {
-	Server    ServerConfig
-	Loggers   map[string]*LoggerConfig `validate:"dive"`
-	Databases map[string]*DbConfig     `validate:"dive"`
-	Depends   DependsConfig
-	RunTime   RunTimeConfig
-
-	Vars      map[string]string
-	LogDir    string
-	ConfigDir string
+	Server        ServerConfig
+	Loggers       map[string]*LoggerConfig `validate:"dive"`
+	Databases     map[string]*DbConfig     `validate:"dive"`
+	Depends       DependsConfig
+	RunTime       RunTimeConfig
+	NacosRegsiter *NacosRegisterConfig
+	Vars          map[string]string
+	LogDir        string
+	ConfigDir     string
 }
 
 var DefaultConfig *Config

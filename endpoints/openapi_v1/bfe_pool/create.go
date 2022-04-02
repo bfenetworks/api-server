@@ -41,7 +41,7 @@ var _ xreq.Handler = CreateAction
 // CreateAction action
 // AUTO GEN BY ctrl, MODIFY AS U NEED
 func CreateAction(req *http.Request) (interface{}, error) {
-	param, err := product_pool.NewUpsertParam(req)
+	param, err := product_pool.NewCreateParam(req)
 	if err != nil {
 		return nil, err
 	}
@@ -54,12 +54,19 @@ func CreateAction(req *http.Request) (interface{}, error) {
 	}
 
 	oneData, err := container.PoolManager.CreateBFEPool(req.Context(), &icluster_conf.PoolParam{
-		Name:      param.Name,
+		Name: param.Name,
+		Type: param.Type,
+	}, &icluster_conf.InstancePool{
 		Instances: product_pool.Instancesc2i(param.Instances),
 	})
 	if err != nil {
 		return nil, err
 	}
 
-	return product_pool.NewOneData(oneData), nil
+	manager, err := container.InstancePoolManager.BatchFetchInstances(req.Context(), []*icluster_conf.Pool{oneData})
+	if err != nil {
+		return nil, err
+	}
+
+	return product_pool.NewOneData(oneData, manager[oneData.Name]), nil
 }
