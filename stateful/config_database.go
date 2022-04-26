@@ -29,10 +29,10 @@ type DbConfig struct {
 
 	Driver string `validate:"required,min=1"`
 
-	ConnMaxIdleTimeMs int
-	ConnMaxLifetimeMs int
-	MaxOpenConns      int `validate:"required,min=0"` // max open connections in database connection pool
-	MaxIdleConns      int // max idle connections in database connection pool
+	ConnMaxIdleTimeInMs int
+	ConnMaxLifetimeInMs int
+	MaxOpenConns        int `validate:"required,min=0"` // max open connections in database connection pool
+	MaxIdleConns      	int // max idle connections in database connection pool
 }
 
 func NewDB(dbConfig *DbConfig) (*sql.DB, error) {
@@ -47,8 +47,8 @@ func NewDB(dbConfig *DbConfig) (*sql.DB, error) {
 
 	db.SetMaxOpenConns(dbConfig.MaxOpenConns)
 	db.SetMaxIdleConns(dbConfig.MaxIdleConns)
-	db.SetConnMaxIdleTime(time.Duration(dbConfig.ConnMaxIdleTimeMs) * time.Millisecond)
-	db.SetConnMaxLifetime(time.Duration(dbConfig.ConnMaxLifetimeMs) * time.Millisecond)
+	db.SetConnMaxIdleTime(time.Duration(dbConfig.ConnMaxIdleTimeInMs) * time.Millisecond)
+	db.SetConnMaxLifetime(time.Duration(dbConfig.ConnMaxLifetimeInMs) * time.Millisecond)
 
 	return db, nil
 }

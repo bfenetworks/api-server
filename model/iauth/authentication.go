@@ -301,7 +301,7 @@ var Authenticators = map[string]func(ctx context.Context, param *AuthenticatePar
 			return nil, xerror.WrapAuthenticateFailErrorWithMsg("Session Key Wrong")
 		}
 
-		if user.SessionKeyCreateAt.AddDate(0, 0, stateful.DefaultConfig.RunTime.SessionExpireDay).Before(time.Now()) {
+		if user.SessionKeyCreateAt.AddDate(0, 0, stateful.DefaultConfig.RunTime.SessionExpireInDay).Before(time.Now()) {
 			return nil, xerror.WrapAuthenticateFailErrorWithMsg("Session Key Expired")
 		}
 

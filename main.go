@@ -101,7 +101,7 @@ func serverStartUp() {
 	endpoints.RegisterRouters(router)
 	n.UseHandler(router)
 
-	timeout := time.Duration(serverConfig.GracefulTimeOutMs) * time.Millisecond
+	timeout := time.Duration(serverConfig.GracefulTimeOutInMs) * time.Millisecond
 	address := fmt.Sprintf("0.0.0.0:%d", serverConfig.ServerPort)
 	fmt.Println("Run Server At:", address)
 	graceful.Run(address, timeout, n)

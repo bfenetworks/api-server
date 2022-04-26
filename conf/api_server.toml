@@ -4,7 +4,7 @@
 # server port
 ServerPort          = 8183
 # server graceful exit timeout
-GracefulTimeOutMs   = 5000
+GracefulTimeOutInMs   = 5000
 # monitor port, don't start monitor server if less than 0
 MonitorPort         = 8284
 
@@ -46,8 +46,8 @@ AllowNativePasswords= true
 Driver              = "mysql"
 MaxOpenConns        = 500
 MaxIdleConns        = 100
-ConnMaxIdleTimeMs   = 500000
-ConnMaxLifetimeMs   = 5000000
+ConnMaxIdleTimeInMs   = 500000
+ConnMaxLifetimeInMs   = 5000000
 
 
 # ---------------------------------
@@ -73,7 +73,7 @@ SkipTokenValidate   = false
 # sql will be record to log file when this option be opend
 RecordSQL           = false
 # how long use must login again
-SessionExpireDay    = 10
+SessionExpireInDay    = 10
 # static file path, when dynamic router not be matched, static file will be return if found
 StaticFilePath      = "./static"
 # debug info will be add to response when this option be opend
