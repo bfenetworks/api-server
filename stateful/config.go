@@ -24,17 +24,17 @@ import (
 )
 
 type ServerConfig struct {
-	ServerPort        int `validate:"required,min=1"` // service port
-	MonitorPort       int // monitor port
-	GracefulTimeOutMs int `validate:"required,min=1"` // time out setting for graceful shutdown
+	ServerPort          int `validate:"required,min=1"` // service port
+	MonitorPort         int // monitor port
+	GracefulTimeOutInMs int `validate:"required,min=1"` // time out setting for graceful shutdown
 }
 
 type RunTimeConfig struct {
-	SessionExpireDay  int  `validate:"required,min=1"`
-	SkipTokenValidate bool // skip user identify, you can open it when debug
-	RecordSQL         bool
-	StaticFilePath    string
-	Debug             bool
+	SessionExpireInDay int  `validate:"required,min=1"`
+	SkipTokenValidate  bool // skip user identify, you can open it when debug
+	RecordSQL          bool
+	StaticFilePath     string
+	Debug              bool
 }
 
 type Config struct {
