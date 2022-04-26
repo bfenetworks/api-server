@@ -8,7 +8,6 @@ GracefulTimeOutInMs = 5000
 # monitor port, don't start monitor server if less than 0
 MonitorPort = 8284
 
-
 # ---------------------------------
 # Logger Config
 # access log config
