@@ -1,13 +1,17 @@
 # ---------------------------------
-# API Server 配置
+# API Server Config
 [Server]
-ServicePort         = 8087
-MonitorPort         = 8089
-GracefulTimeOutMs   = 10000
+# server port
+ServerPort = 8183
+# server graceful exit timeout
+GracefulTimeOutInMs = 5000
+# monitor port, don't start monitor server if less than 0
+MonitorPort = 8284
 
 
 # ---------------------------------
-# 日志相关配置
+# Logger Config
+# access log config
 [Loggers.access]
 LogName     = "access"
 LogLevel    = "INFO"
@@ -16,6 +20,7 @@ BackupCount = 1
 Format      = "[%D %T] [%L] [%S] %M"
 StdOut      = false
 
+# sql log, you can skip this config if RunTime.RecordSQL is false
 [Loggers.sql]
 LogName     = "sql"
 LogLevel    = "INFO"
@@ -24,91 +29,52 @@ BackupCount = 1
 Format      = "[%D %T] %M"
 StdOut      = false
 
-[Loggers.gslb]
-LogName     = "gslb"
-LogLevel    = "INFO"
-RotateWhen  = "MIDNIGHT"
-BackupCount = 1
-Format      = "[%D %T] [%L] [%S] %M"
-StdOut      = false
-
-
 # ---------------------------------
-# 数据库相关配置
+# Database Config
 # see https://github.com/go-sql-driver/mysql/blob/master/dsn.go#L37
 [Databases.bfe_db]
-DBName              = "bfe_api_190"
-Addr                = "10.130.29.32:5535"
-Net                 = "tcp"
-User                = "blb"
-Passwd              = "blb"
-MultiStatements     = true
-MaxAllowedPacket    = 67108864
-ParseTime           = true
-AllowNativePasswords= true
-Params 				= {"loc"="Local", timeout="1s", "readTimeout"="10s", "writeTimeout"="10s"}
+DBName               = "open_bfe"
+Addr                 = "127.0.0.1:3306"
+Net                  = "tcp"
+User                 = "{user}"
+Passwd               = "{password}"
+MultiStatements      = true
+MaxAllowedPacket     = 67108864
+ParseTime            = true
+AllowNativePasswords = true
 
 Driver              = "mysql"
-MaxOpenConns        = 100
+MaxOpenConns        = 500
 MaxIdleConns        = 100
-ConnMaxIdleTimeMs   = 50000
-ConnMaxLifetimeMs   = 50000
+ConnMaxIdleTimeInMs = 500000
+ConnMaxLifetimeInMs = 5000000
 
 
 # ---------------------------------
-# Auth20 配置，鉴权相关
-[Auth20]
-ClientID        = "ILB_ARG_API_SERVER_AUTH2_CLIENT_ID"
-ClientSecret    = "ILB_ARG_API_SERVER_AUTH2_CLIENT_SECRET"
-TokenURL        = "ILB_ARG_API_SERVER_AUTH2_SERVER/token"
-# 如果不希望程序自动调整第三方登录，将本配置置空
-LoginPage       = "ILB_ARG_API_SERVER_AUTH2_SERVER/authorize"
-RedirectURI     = "ILB_ARG_API_SERVER_AUTH2_REDIRECT_URL"
-JWKRSAPublicKey = """{
-	"kty": "RSA",
-	"e": "AQAB",
-	"kid": "rsa1",
-	"alg": "RS256",
-	"n": "qt6yOiI_wCoCVlGO0MySsez0VkSqhPvDl3rfabOslx35mYEO-n4ABfIT5Gn2zN-CeIcOZ5ugAXvIIRWv5H55-tzjFazi5IKkOIMCiz5__MtsdxKCqGlZu2zt-BLpqTOAPiflNPpM3RUAlxKAhnYEqNha6-allPnFQupnW_eTYoyuzuedT7dSp90ry0ZcQDimntXWeaSbrYKCj9Rr9W1jn2uTowUuXaScKXTCjAmJVnsD75JNzQfa8DweklTyWQF-Y5Ky039I0VIu-0CIGhXY48GAFe2EFb8VpNhf07DP63p138RWQ1d3KPEM9mYJVpQC68j3wzDQYSljpLf9by7TGw"
-}"""
-
-
-# ---------------------------------
-# 依赖系统相关配置
+# Dependence Config
 [Depends]
-LokiServerAddr          = "http://localhost:3100"
-GetInstanceByServiceCMD = "get_instance_by_service"
-NavTreeFile             = "${conf_dir}/nav_tree.toml"
-I18nDir     			= "${conf_dir}/i18n"
-NLBVsConfFileDeprecated = "${conf_dir}/bgw_vs.conf"
-NLBVsConfFile           = "${conf_dir}/virtual_server.conf"
-Grafana                 = "http://bjyz-op-bfedev00.bjyz.baidu.com:8300/"
-UIIcon                  = ""
-UILogo                  = ""
-
-
-# ---------------------------------
-# TLS默认配置
-[TLSGlobal]
-DefaultNextProtos       = ["http/1.1"]
-DefaultChacha20         = false
-DefaultClientCAName     = "ca-bundle"
-DefaultSecurityGrade    = "B"
+# NavTreeFile path
+NavTreeFile = "${conf_dir}/nav_tree.toml"
+# i18n conf dir path
+I18nDir = "${conf_dir}/i18n"
+# dashboard icon
+UIIcon = "https://raw.githubusercontent.com/bfenetworks/bfe/develop/docs/images/logo/icon/color/bfe-icon-color.svg"
+# dashboard logo
+UILogo = "https://raw.githubusercontent.com/bfenetworks/bfe/develop/docs/images/logo/horizontal/color/bfe-horizontal-color.png"
 
 
 # ---------------------------------
 # Runtime Config
 [RunTime]
 # you can use "Skip {role_name} as authorization header to access api server if open this optional
-# eg: Headers[Authorization] = "Skip admin"
+# eg: Headers[Authorization] = "Skip System"
 # don't open it on production environment
-SkipTokenValidate   = true
+SkipTokenValidate = false
 # sql will be record to log file when this option be opend
-RecordSQL           = true
+RecordSQL = false
 # how long use must login again
-SessionExpireDay    = 10
+SessionExpireInDay = 10
 # static file path, when dynamic router not be matched, static file will be return if found
-StaticFilePath      = "../static"
+StaticFilePath = "./static"
 # debug info will be add to response when this option be opend
-Debug               = false
-AccessLogWithRspBodyExcludePaths = ["^/inner-api/v1/configs/gslb$", "auth/op-logs$"]
+Debug = false
