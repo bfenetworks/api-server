@@ -24,19 +24,19 @@ import (
 	"github.com/bfenetworks/api-server/storage/rdb/internal/dao"
 )
 
-type RDBInstancePoolStorager struct {
+type RDBInstancePoolStorage struct {
 	dbCtxFactory lib.DBContextFactory
 }
 
-func NewRDBInstancePoolStorager(dbCtxFactory lib.DBContextFactory) *RDBInstancePoolStorager {
-	return &RDBInstancePoolStorager{
+func NewRDBInstancePoolStorage(dbCtxFactory lib.DBContextFactory) *RDBInstancePoolStorage {
+	return &RDBInstancePoolStorage{
 		dbCtxFactory: dbCtxFactory,
 	}
 }
 
-var _ icluster_conf.InstancePoolStorager = &RDBInstancePoolStorager{}
+var _ icluster_conf.InstancePoolStorage = &RDBInstancePoolStorage{}
 
-func (rpps *RDBInstancePoolStorager) UpdateInstances(ctx context.Context, pool *icluster_conf.Pool,
+func (rpps *RDBInstancePoolStorage) UpdateInstances(ctx context.Context, pool *icluster_conf.Pool,
 	pis *icluster_conf.InstancePool) error {
 
 	var detail *string
@@ -62,14 +62,14 @@ func (rpps *RDBInstancePoolStorager) UpdateInstances(ctx context.Context, pool *
 	return err
 }
 
-func (rpps *RDBInstancePoolStorager) BatchFetchInstances(ctx context.Context,
+func (rpps *RDBInstancePoolStorage) BatchFetchInstances(ctx context.Context,
 	poolList []*icluster_conf.Pool) (map[string]*icluster_conf.InstancePool, error) {
 
 	m := map[string]*icluster_conf.InstancePool{}
 	for _, one := range poolList {
-		// because of RDBPoolStorager.FetchPools will get pool list
+		// because of RDBPoolStorage.FetchPools will get pool list
 		// it's trick
-		pi := one.GetDefaultInstances()
+		pi := one.GetDefaultPool()
 		m[pi.Name] = pi
 	}
 

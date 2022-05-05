@@ -52,14 +52,14 @@ func UpdateAction(req *http.Request) (interface{}, error) {
 		return nil, xerror.WrapRecordNotExist("Instance Pool")
 	}
 
-	pi := &icluster_conf.InstancePool{
+	p := &icluster_conf.InstancePool{
 		Name:      one.Name,
 		Instances: product_pool.Instancesc2i(param.Instances),
 	}
-	err = container.InstancePoolManager.UpdateInstances(req.Context(), one, pi)
+	err = container.InstancePoolManager.UpdateInstances(req.Context(), one, p)
 	if err != nil {
 		return nil, err
 	}
 
-	return product_pool.NewOneData(one, pi), err
+	return product_pool.NewOneData(one, p), err
 }

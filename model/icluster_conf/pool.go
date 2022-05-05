@@ -58,14 +58,14 @@ func (p *Pool) SetDefaultInstances(is []Instance) {
 	p.instances = is
 }
 
-func (p *Pool) GetDefaultInstances() *InstancePool {
+func (p *Pool) GetDefaultPool() *InstancePool {
 	return &InstancePool{
 		Name:      p.Name,
 		Instances: p.instances,
 	}
 }
 
-type PoolStorager interface {
+type PoolStorage interface {
 	FetchPool(ctx context.Context, name string) (*Pool, error)
 	FetchPools(ctx context.Context, param *PoolFilter) ([]*Pool, error)
 
@@ -75,62 +75,62 @@ type PoolStorager interface {
 }
 
 type PoolManager struct {
-	storager           PoolStorager
+	storage            PoolStorage
 	bfeClusterStorager ibasic.BFEClusterStorager
 	subClusterStorager SubClusterStorager
 	txn                itxn.TxnStorager
 
-	poolInstancesManager *InstancePoolManager
+	instancePoolManager *InstancePoolManager
 }
 
-func NewPoolManager(txn itxn.TxnStorager, storager PoolStorager,
+func NewPoolManager(txn itxn.TxnStorager, storage PoolStorage,
 	bfeClusterStorager ibasic.BFEClusterStorager, subClusterStorager SubClusterStorager,
-	poolInstancesManager *InstancePoolManager) *PoolManager {
+	instancePoolManager *InstancePoolManager) *PoolManager {
 
 	return &PoolManager{
 		txn:                txn,
-		storager:           storager,
+		storage:            storage,
 		bfeClusterStorager: bfeClusterStorager,
 		subClusterStorager: subClusterStorager,
 
-		poolInstancesManager: poolInstancesManager,
+		instancePoolManager: instancePoolManager,
 	}
 }
 
-func (rppm *PoolManager) FetchPoolByName(ctx context.Context, name string) (one *Pool, err error) {
-	err = rppm.txn.AtomExecute(ctx, func(ctx context.Context) error {
-		one, err = rppm.storager.FetchPool(ctx, name)
+func (m *PoolManager) FetchPoolByName(ctx context.Context, name string) (one *Pool, err error) {
+	err = m.txn.AtomExecute(ctx, func(ctx context.Context) error {
+		one, err = m.storage.FetchPool(ctx, name)
 		return err
 	})
 
 	return
 }
 
-func (rppm *PoolManager) FetchBFEPool(ctx context.Context, name string) (one *Pool, err error) {
-	return rppm.FetchProductPool(ctx, ibasic.BuildinProduct, name)
+func (m *PoolManager) FetchBFEPool(ctx context.Context, name string) (one *Pool, err error) {
+	return m.FetchProductPool(ctx, ibasic.BuildinProduct, name)
 }
 
-func (rppm *PoolManager) FetchProductPool(ctx context.Context, product *ibasic.Product, name string) (one *Pool, err error) {
+func (m *PoolManager) FetchProductPool(ctx context.Context, product *ibasic.Product, name string) (one *Pool, err error) {
 	name, err = poolNameJudger(product.Name, name)
 	if err != nil {
 		return
 	}
 
-	err = rppm.txn.AtomExecute(ctx, func(ctx context.Context) error {
-		one, err = rppm.storager.FetchPool(ctx, name)
+	err = m.txn.AtomExecute(ctx, func(ctx context.Context) error {
+		one, err = m.storage.FetchPool(ctx, name)
 		return err
 	})
 
 	return
 }
 
-func (rppm *PoolManager) FetchBFEPools(ctx context.Context) (list []*Pool, err error) {
-	return rppm.FetchProductPools(ctx, ibasic.BuildinProduct)
+func (m *PoolManager) FetchBFEPools(ctx context.Context) (list []*Pool, err error) {
+	return m.FetchProductPools(ctx, ibasic.BuildinProduct)
 }
 
-func (rppm *PoolManager) FetchProductPools(ctx context.Context, product *ibasic.Product) (list []*Pool, err error) {
-	err = rppm.txn.AtomExecute(ctx, func(ctx context.Context) error {
-		list, err = rppm.storager.FetchPools(ctx, &PoolFilter{
+func (m *PoolManager) FetchProductPools(ctx context.Context, product *ibasic.Product) (list []*Pool, err error) {
+	err = m.txn.AtomExecute(ctx, func(ctx context.Context) error {
+		list, err = m.storage.FetchPools(ctx, &PoolFilter{
 			ProductID: &product.ID,
 		})
 		return err
@@ -155,8 +155,8 @@ func poolNameJudger(productName string, poolName string) (realName string, err e
 // CanDelete check whether pool can be deleted, Check Logic:
 // 1. Not BFE Cluster Refer To
 // 2. Not SubCluster Refer To
-func (rppm *PoolManager) CanDelete(ctx context.Context, pool *Pool) error {
-	bfeClusters, err := rppm.bfeClusterStorager.FetchBFEClusters(ctx, &ibasic.BFEClusterFilter{
+func (m *PoolManager) CanDelete(ctx context.Context, pool *Pool) error {
+	bfeClusters, err := m.bfeClusterStorager.FetchBFEClusters(ctx, &ibasic.BFEClusterFilter{
 		Pool: &pool.Name,
 	})
 	if err != nil {
@@ -166,7 +166,7 @@ func (rppm *PoolManager) CanDelete(ctx context.Context, pool *Pool) error {
 		return xerror.WrapModelErrorWithMsg("BFECluster %s Refer To This Pool", bfeClusters[0].Name)
 	}
 
-	subClusters, err := rppm.subClusterStorager.FetchSubClusterList(ctx, &SubClusterFilter{
+	subClusters, err := m.subClusterStorager.FetchSubClusterList(ctx, &SubClusterFilter{
 		InstancePool: pool,
 	})
 	if err != nil {
@@ -179,18 +179,18 @@ func (rppm *PoolManager) CanDelete(ctx context.Context, pool *Pool) error {
 	return nil
 }
 
-func (rppm *PoolManager) DeleteBFEPool(ctx context.Context, name string) (one *Pool, err error) {
-	return rppm.DeleteProductPool(ctx, ibasic.BuildinProduct, name)
+func (m *PoolManager) DeleteBFEPool(ctx context.Context, name string) (one *Pool, err error) {
+	return m.DeleteProductPool(ctx, ibasic.BuildinProduct, name)
 }
 
-func (rppm *PoolManager) DeleteProductPool(ctx context.Context, product *ibasic.Product, name string) (one *Pool, err error) {
+func (m *PoolManager) DeleteProductPool(ctx context.Context, product *ibasic.Product, name string) (one *Pool, err error) {
 	name, err = poolNameJudger(product.Name, name)
 	if err != nil {
 		return
 	}
 
-	err = rppm.txn.AtomExecute(ctx, func(ctx context.Context) error {
-		one, err = rppm.storager.FetchPool(ctx, name)
+	err = m.txn.AtomExecute(ctx, func(ctx context.Context) error {
+		one, err = m.storage.FetchPool(ctx, name)
 		if err != nil {
 			return err
 		}
@@ -199,34 +199,34 @@ func (rppm *PoolManager) DeleteProductPool(ctx context.Context, product *ibasic.
 			return xerror.WrapRecordNotExist("Pool")
 		}
 
-		if err = rppm.CanDelete(ctx, one); err != nil {
+		if err = m.CanDelete(ctx, one); err != nil {
 			return err
 		}
 
-		return rppm.storager.DeletePool(ctx, one)
+		return m.storage.DeletePool(ctx, one)
 	})
 
 	return
 }
 
-func (rppm *PoolManager) CreateBFEPool(ctx context.Context, pool *PoolParam, pis *InstancePool) (one *Pool, err error) {
+func (m *PoolManager) CreateBFEPool(ctx context.Context, pool *PoolParam, pis *InstancePool) (one *Pool, err error) {
 	pool.Tag = &PoolTagBFE
-	return rppm.CreateProductPool(ctx, ibasic.BuildinProduct, pool, pis)
+	return m.CreateProductPool(ctx, ibasic.BuildinProduct, pool, pis)
 }
 
-func (rppm *PoolManager) CreateProductPool(ctx context.Context, product *ibasic.Product, pool *PoolParam, pis *InstancePool) (one *Pool, err error) {
+func (m *PoolManager) CreateProductPool(ctx context.Context, product *ibasic.Product, param *PoolParam, pool *InstancePool) (one *Pool, err error) {
 	var pN string
-	pN, err = poolNameJudger(product.Name, *pool.Name)
+	pN, err = poolNameJudger(product.Name, *param.Name)
 	if err != nil {
 		return
 	}
-	pool.Name = &pN
-	if pool.Tag == nil {
-		pool.Tag = &PoolTagProduct
+	param.Name = &pN
+	if param.Tag == nil {
+		param.Tag = &PoolTagProduct
 	}
 
-	err = rppm.txn.AtomExecute(ctx, func(ctx context.Context) error {
-		old, err := rppm.storager.FetchPool(ctx, *pool.Name)
+	err = m.txn.AtomExecute(ctx, func(ctx context.Context) error {
+		old, err := m.storage.FetchPool(ctx, *param.Name)
 		if err != nil {
 			return err
 		}
@@ -234,13 +234,13 @@ func (rppm *PoolManager) CreateProductPool(ctx context.Context, product *ibasic.
 			return xerror.WrapRecordExisted()
 		}
 
-		one, err = rppm.storager.CreatePool(ctx, product, pool)
+		one, err = m.storage.CreatePool(ctx, product, param)
 		if err != nil {
 			return err
 		}
 
-		if pis != nil {
-			err = rppm.poolInstancesManager.UpdateInstances(ctx, one, pis)
+		if pool != nil {
+			err = m.instancePoolManager.UpdateInstances(ctx, one, pool)
 		}
 		return err
 	})
@@ -248,13 +248,13 @@ func (rppm *PoolManager) CreateProductPool(ctx context.Context, product *ibasic.
 	return
 }
 
-func (rppm *PoolManager) UpdateBFEPool(ctx context.Context, pool *Pool, diff *PoolParam) (err error) {
-	return rppm.UpdateProductPool(ctx, ibasic.BuildinProduct, pool, diff)
+func (m *PoolManager) UpdateBFEPool(ctx context.Context, pool *Pool, diff *PoolParam) (err error) {
+	return m.UpdateProductPool(ctx, ibasic.BuildinProduct, pool, diff)
 }
 
-func (rppm *PoolManager) UpdateProductPool(ctx context.Context, product *ibasic.Product, pool *Pool, diff *PoolParam) (err error) {
-	err = rppm.txn.AtomExecute(ctx, func(ctx context.Context) error {
-		return rppm.storager.UpdatePool(ctx, pool, diff)
+func (m *PoolManager) UpdateProductPool(ctx context.Context, product *ibasic.Product, pool *Pool, diff *PoolParam) (err error) {
+	err = m.txn.AtomExecute(ctx, func(ctx context.Context) error {
+		return m.storage.UpdatePool(ctx, pool, diff)
 	})
 
 	return
@@ -269,13 +269,13 @@ func PoolList2Map(list []*Pool) map[int64]*Pool {
 	return m
 }
 
-func (rppm *PoolManager) GetPoolByName(ctx context.Context, poolName *string) (pool *Pool, err error) {
-	err = rppm.txn.AtomExecute(ctx, func(ctx context.Context) error {
+func (m *PoolManager) GetPoolByName(ctx context.Context, poolName *string) (pool *Pool, err error) {
+	err = m.txn.AtomExecute(ctx, func(ctx context.Context) error {
 		if poolName == nil || *poolName == "" {
 			return xerror.WrapParamErrorWithMsg("Pool Name Illegal")
 		}
 
-		pool, err = rppm.storager.FetchPool(ctx, *poolName)
+		pool, err = m.storage.FetchPool(ctx, *poolName)
 		return err
 	})
 

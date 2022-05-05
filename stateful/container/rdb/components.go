@@ -44,7 +44,7 @@ func Init() {
 		container.VersionControlStoragerSingleton)
 	container.ProductStoragerSingleton = basic.NewProductManager(stateful.NewBFEDBContext)
 	container.BFEClusterStoragerSingleton = basic.NewRDBBFEClusterStorager(stateful.NewBFEDBContext)
-	container.PoolStoragerSingleton = cluster_conf.NewRDBPoolStorager(
+	container.PoolStoragerSingleton = cluster_conf.NewRDBPoolStorage(
 		stateful.NewBFEDBContext,
 		container.ProductStoragerSingleton)
 	container.SubClusterStoragerSingleton = cluster_conf.NewRDBSubClusterStorager(
@@ -91,9 +91,9 @@ func Init() {
 		container.DomainStoragerSingleton)
 
 	nacosClient, _ := stateful.GetNacosClient()
-	container.InstancePoolManager = icluster_conf.NewInstancePoolManager(map[int8]icluster_conf.InstancePoolStorager{
-		icluster_conf.InstancePoolTypeRDB:   cluster_conf.NewRDBInstancePoolStorager(stateful.NewBFEDBContext),
-		icluster_conf.InstancePoolTypeNacos: nacos_cluster_conf.NewNacosInstancePoolStorager(nacosClient),
+	container.InstancePoolManager = icluster_conf.NewInstancePoolManager(map[int8]icluster_conf.InstancePoolStorage{
+		icluster_conf.InstancePoolTypeRDB:   cluster_conf.NewRDBInstancePoolStorage(stateful.NewBFEDBContext),
+		icluster_conf.InstancePoolTypeNacos: nacos_cluster_conf.NewNacosInstancePoolStorage(nacosClient),
 	})
 
 	container.ClusterManager = icluster_conf.NewClusterManager(

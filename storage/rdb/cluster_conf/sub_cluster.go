@@ -26,11 +26,11 @@ import (
 type RDBSubClusterStorager struct {
 	dbCtxFactory lib.DBContextFactory
 
-	poolStorage     icluster_conf.PoolStorager
+	poolStorage     icluster_conf.PoolStorage
 	productStorager ibasic.ProductStorager
 }
 
-func NewRDBSubClusterStorager(dbCtxFactory lib.DBContextFactory, poolStorage icluster_conf.PoolStorager,
+func NewRDBSubClusterStorager(dbCtxFactory lib.DBContextFactory, poolStorage icluster_conf.PoolStorage,
 	productStorager ibasic.ProductStorager) *RDBSubClusterStorager {
 
 	return &RDBSubClusterStorager{

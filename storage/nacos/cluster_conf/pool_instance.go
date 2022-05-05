@@ -24,22 +24,22 @@ import (
 	"github.com/nacos-group/nacos-sdk-go/vo"
 )
 
-type NacosPoolInstanceStorager struct {
+type NacosPoolInstanceStorage struct {
 	client naming_client.INamingClient
 }
 
-func NewNacosInstancePoolStorager(client naming_client.INamingClient) *NacosPoolInstanceStorager {
-	return &NacosPoolInstanceStorager{
+func NewNacosInstancePoolStorage(client naming_client.INamingClient) *NacosPoolInstanceStorage {
+	return &NacosPoolInstanceStorage{
 		client: client,
 	}
 }
 
-func (rpps *NacosPoolInstanceStorager) UpdateInstances(ctx context.Context, pool *icluster_conf.Pool, pis *icluster_conf.InstancePool) error {
+func (rpps *NacosPoolInstanceStorage) UpdateInstances(ctx context.Context, pool *icluster_conf.Pool, pis *icluster_conf.InstancePool) error {
 
 	return nil
 }
 
-func (rpps *NacosPoolInstanceStorager) BatchFetchInstances(ctx context.Context, poolList []*icluster_conf.Pool) (map[string]*icluster_conf.InstancePool, error) {
+func (rpps *NacosPoolInstanceStorage) BatchFetchInstances(ctx context.Context, poolList []*icluster_conf.Pool) (map[string]*icluster_conf.InstancePool, error) {
 	m := map[string]*icluster_conf.InstancePool{}
 	for _, one := range poolList {
 		pi, err := rpps.GetInstance(one.Name[strings.Index(one.Name, ".")+1:])
@@ -53,7 +53,7 @@ func (rpps *NacosPoolInstanceStorager) BatchFetchInstances(ctx context.Context, 
 	return m, nil
 }
 
-func (rpps *NacosPoolInstanceStorager) GetInstance(name string) (*icluster_conf.InstancePool, error) {
+func (rpps *NacosPoolInstanceStorage) GetInstance(name string) (*icluster_conf.InstancePool, error) {
 	selectInstancesParam := vo.SelectInstancesParam{
 		ServiceName: name,
 		HealthyOnly: true,

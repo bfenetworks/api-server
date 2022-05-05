@@ -55,7 +55,7 @@ func (rm *ClusterManager) clusterTableConfGenerator(ctx context.Context) (*ivers
 	}
 
 	// maybe rpc in db transaction
-	piMap, err := rm.poolInstancesManager.BatchFetchInstances(ctx, PoolMap2List(pools))
+	piMap, err := rm.instancePoolManager.BatchFetchInstances(ctx, PoolMap2List(pools))
 	if err != nil {
 		return nil, err
 	}

@@ -25,22 +25,22 @@ import (
 	"github.com/bfenetworks/api-server/storage/rdb/internal/dao"
 )
 
-type RDBPoolStorager struct {
+type RDBPoolStorage struct {
 	dbCtxFactory lib.DBContextFactory
 
 	productStorager ibasic.ProductStorager
 }
 
-func NewRDBPoolStorager(dbCtxFactory lib.DBContextFactory,
-	productStorager ibasic.ProductStorager) *RDBPoolStorager {
+func NewRDBPoolStorage(dbCtxFactory lib.DBContextFactory,
+	productStorager ibasic.ProductStorager) *RDBPoolStorage {
 
-	return &RDBPoolStorager{
+	return &RDBPoolStorage{
 		dbCtxFactory:    dbCtxFactory,
 		productStorager: productStorager,
 	}
 }
 
-var _ icluster_conf.PoolStorager = &RDBPoolStorager{}
+var _ icluster_conf.PoolStorage = &RDBPoolStorage{}
 
 func poolFilter2Param(filter *icluster_conf.PoolFilter) *dao.TPoolsParam {
 	if filter == nil {
@@ -69,7 +69,7 @@ func poolParami2d(data *icluster_conf.PoolParam) (*dao.TPoolsParam, error) {
 	}, nil
 }
 
-func (rpps *RDBPoolStorager) CreatePool(ctx context.Context, product *ibasic.Product,
+func (rpps *RDBPoolStorage) CreatePool(ctx context.Context, product *ibasic.Product,
 	data *icluster_conf.PoolParam) (*icluster_conf.Pool, error) {
 
 	data.ProductID = &product.ID
@@ -92,7 +92,7 @@ func (rpps *RDBPoolStorager) CreatePool(ctx context.Context, product *ibasic.Pro
 
 }
 
-func (rpps *RDBPoolStorager) FetchPool(ctx context.Context, name string) (*icluster_conf.Pool, error) {
+func (rpps *RDBPoolStorage) FetchPool(ctx context.Context, name string) (*icluster_conf.Pool, error) {
 	list, err := rpps.FetchPools(ctx, &icluster_conf.PoolFilter{
 		Name: &name,
 	})
@@ -130,7 +130,7 @@ func newPool(pp *dao.TPools, product *ibasic.Product) (*icluster_conf.Pool, erro
 	return data, nil
 }
 
-func (rpps *RDBPoolStorager) FetchPools(ctx context.Context, filter *icluster_conf.PoolFilter) ([]*icluster_conf.Pool, error) {
+func (rpps *RDBPoolStorage) FetchPools(ctx context.Context, filter *icluster_conf.PoolFilter) ([]*icluster_conf.Pool, error) {
 	dbCtx, err := rpps.dbCtxFactory(ctx)
 	if err != nil {
 		return nil, err
@@ -172,7 +172,7 @@ func (rpps *RDBPoolStorager) FetchPools(ctx context.Context, filter *icluster_co
 	return rst, nil
 }
 
-func (rpps *RDBPoolStorager) UpdatePool(ctx context.Context, oldData *icluster_conf.Pool,
+func (rpps *RDBPoolStorage) UpdatePool(ctx context.Context, oldData *icluster_conf.Pool,
 	diff *icluster_conf.PoolParam) error {
 
 	p, err := poolParami2d(diff)
@@ -192,7 +192,7 @@ func (rpps *RDBPoolStorager) UpdatePool(ctx context.Context, oldData *icluster_c
 	return err
 }
 
-func (rpps *RDBPoolStorager) DeletePool(ctx context.Context, pool *icluster_conf.Pool) error {
+func (rpps *RDBPoolStorage) DeletePool(ctx context.Context, pool *icluster_conf.Pool) error {
 	dbCtx, err := rpps.dbCtxFactory(ctx)
 	if err != nil {
 		return nil

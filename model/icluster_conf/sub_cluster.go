@@ -81,18 +81,18 @@ type SubClusterManager struct {
 	storager SubClusterStorager
 
 	productStorager ibasic.ProductStorager
-	poolStorager    PoolStorager
+	poolStorage     PoolStorage
 	clusterStorager ClusterStorager
 }
 
 func NewSubClusterManager(txn itxn.TxnStorager, storager SubClusterStorager,
-	productStorager ibasic.ProductStorager, poolStorager PoolStorager,
+	productStorager ibasic.ProductStorager, poolStorage PoolStorage,
 	clusterStorager ClusterStorager) *SubClusterManager {
 	return &SubClusterManager{
 		txn:             txn,
 		storager:        storager,
 		productStorager: productStorager,
-		poolStorager:    poolStorager,
+		poolStorage:     poolStorage,
 		clusterStorager: clusterStorager,
 	}
 }
@@ -180,7 +180,7 @@ func (scm *SubClusterManager) CreateSubCluster(ctx context.Context, product *iba
 			return xerror.WrapRecordExisted("SubCluster")
 		}
 
-		pool, err := scm.poolStorager.FetchPool(ctx, *param.PoolName)
+		pool, err := scm.poolStorage.FetchPool(ctx, *param.PoolName)
 		if err != nil {
 			return err
 		}

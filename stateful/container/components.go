@@ -32,7 +32,7 @@ var (
 	BFEClusterStoragerSingleton     ibasic.BFEClusterStorager
 	DomainStoragerSingleton         iroute_conf.DomainStorager
 	ClusterStoragerSingleton        icluster_conf.ClusterStorager
-	PoolStoragerSingleton           icluster_conf.PoolStorager
+	PoolStoragerSingleton           icluster_conf.PoolStorage
 	SubClusterStoragerSingleton     icluster_conf.SubClusterStorager
 	CertificateStoragerSingleton    iprotocol.CertificateStorager
 	AuthenticateStoragerSingleton   iauth.AuthenticateStorager
