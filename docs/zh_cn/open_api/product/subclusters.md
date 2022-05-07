@@ -45,7 +45,7 @@
 }
 ```
 
-- ready: 子集群是否就绪，可以被添加到集群中，准备接入流量。
+- ready: 表示子集群是否就绪。只有已就绪的子集群可以被挂载到集群，准备接入流量。
 - cluster_name: 在集群配置时，会选择子集群进行挂载
 	- 如果当前子集群被挂载到某个集群上，那么cluster_name就是对应的集群名字
 	- 如果当前子集群未挂载到某个集群上，那么cluster_name就是空串
@@ -96,7 +96,13 @@
 #### 成功返回数据示例
 ```
 [ 
-	单条同详情的成功返回数据示例
+	{ 
+		"name": "subcluster_demo", 
+		"instance_pool": "pool_demo", 
+		"ready": true, 
+		"description": "description message", 
+		"cluster_name":"cluster_demo"
+	}
 ] 
 ```
 
@@ -116,18 +122,19 @@
 | product_name | string | 产品线名字 | Y | |
 | sub_cluster_name | string | 子集群名字 | Y | - |
 
-HTTP BODY中参数示例
+#### Body 参数
+| 参数名 | 类型 |参数含义 | 必填 | 补充描述 |
+| - | -  | - | - | - |  
+| name | string |   子集群名字 | N | 一个产品线内子集群名字唯一 |
+| description | string |   子集群描述信息 | N | - |
 
+#### 输入参数示例
 ```
 { 
 	"name": "subcluster_demo", 
 	"description": "description message"
 }
 ```
-
-- 可以变更的字段：
-	- description
-- name不可变更
 
 ### 返回数据(Data内容)
 同创建接口

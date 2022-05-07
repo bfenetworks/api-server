@@ -29,7 +29,7 @@ import (
 type CreateParam struct {
 	Name         *string `json:"name" uri:"name" validate:"required,min=2"`
 	InstancePool *string `json:"instance_pool" uri:"instance_pool" validate:"required,min=2"`
-	Description  *string `json:"description" uri:"description" validate:"required,min=2"`
+	Description  *string `json:"description" uri:"description" validate:"omitempty,min=2"`
 }
 
 // CreateRoute route
