@@ -37,16 +37,37 @@ BFE控制面包含如下组件：
 1. 获取API Server可执行程序
     - 方式一：通过源码编译：clone本仓库后进入项目根目录，执行 `make`，output文件夹包括了可执行文件和初始配置文件
     - 方式二：直接进入 [releases](https://github.com/bfenetworks/api-server/releases) 页面下载相应的编译产出
+1. （可选）使用容器镜像部署
+    - 本仓库提供 `Dockerfile` 与 Makefile 目标：
+        - 构建本地镜像：`make docker`
+        - 构建并推送（多架构）：`REGISTRY=your-registry make docker-push`
+    - Kubernetes 一条命令部署样例位于 `examples/kubernetes/`，可执行 `kubectl apply -k .`
 1. 修改初始配置文件，详见[配置文件说明](./config_param.md)
 - 特别注意：绝大多数配置可以使用默认配置，最小修改集合为 **数据库用户名和密码**
 1. 启动 API Server。执行`./api-server -c ./conf -sc api_server.toml -l ./log `。如果不需要指定启动参数，直接执行 `./api-server` 即可
 
 ## Dashboard部署
+
+### 方式一：容器镜像部署（推荐）
+
+Dashboard 已集成到容器镜像中（默认版本 `v0.0.2`）：
+
+- 使用 `make docker` 构建镜像时自动下载并打包
+- Dashboard 文件位于容器内 `/home/work/api-server/static/`
+- 浏览器访问 `http://host:{ServerPort}`（ServerPort 为 8183）即可看到登录页面
+- 默认账号/密码：`admin/admin`（登录后请立即修改）
+
+可查看 [Dashboard 使用文档](https://github.com/bfenetworks/dashboard/blob/develop/docs/zh-cn/user-guide/SUMMARY.md) 了解BFE管理控制台的基本概念和使用流程。
+
+### 方式二：二进制部署
+
 1. 获取 Dashboard 产出
     - 方式一：通过源码编译： clone [bfenetwork/dashboard](https://github.com/bfenetworks/dashboard) 仓库后进入项目根目录，执行 `sh build.sh`， output 文件夹就是静态配置文件
     - 方式二：直接进入 [dashboard/releases](https://github.com/bfenetworks/dashboard/releases) 页面下载相应的编译产出
-1. 部署：将output文件夹的内容拷贝到 API Server 的 static 文件夹（默认在api-server可执行文件同级目录）中即可
-1. 浏览器打开 http://host:{ServerPort} (ServerPort 为 API Server 部署时配置的端口号) 即可看到登录页面，测试账号和密码都是 `admin`。登陆后，请立刻修改您的admin的密码
+    - 推荐使用已验证版本：`v0.0.2`
+        - `https://github.com/bfenetworks/dashboard/releases/download/v0.0.2/bfe_dashboard_0.0.2.tar.gz`
+2. 部署：将output文件夹的内容拷贝到 API Server 的 static 文件夹（默认在api-server可执行文件同级目录）中即可
+3. 浏览器打开 http://host:{ServerPort} (ServerPort 为 API Server 部署时配置的端口号) 即可看到登录页面，测试账号和密码都是 `admin`。登陆后，请立刻修改您的admin的密码
 
 可查看 [Dashboard 使用文档](https://github.com/bfenetworks/dashboard/blob/develop/docs/zh-cn/user-guide/SUMMARY.md) 了解BFE管理控制台的基本概念和使用流程。
 

@@ -1,0 +1,55 @@
+id = "root"
+# product view nav
+[[children]]
+id = "backend.l7.subnav"
+text = "Backend"
+children = [
+    { id = "instance_pool.list", text = "InstancePool", allowed_roles = ["normal"] }, 
+    { id = "subcluster.list", text = "SubCluster", allowed_roles = ["normal"] },
+    { id = "cluster.list", text = "Cluster", allowed_roles = ["normal"] },
+    { id = "gslb.list", text = "SubClusterLB", allowed_roles = ["normal"] }
+]
+
+[[children]]
+ id = "route.l7.subnav"
+ text = "Route"
+ children = [
+     { id = "domain.list", text = "Domain", allowed_roles = ["normal"] },
+     { id = "router.list", text = "ForwardRule", allowed_roles = ["normal"] }
+ ]
+
+[[children]]
+id = "product.upsert"
+text = "ProductInfo"
+allowed_roles = ["normal"]
+
+[[children]]
+id = "product_user.list"
+text = "ProductUser"
+allowed_roles = ["normal"]
+
+# admin view nav
+[[children]]
+id = "bfe.instance_pool.admin.list"
+text = "BFEInstancePool"
+allowed_roles = ["admin"]
+
+[[children]]
+id = "cluster.admin.list"
+text = "BFECluster"
+allowed_roles = ["admin"]
+
+[[children]]
+id = "cert.list"
+text = "CertificateManage"
+allowed_roles = ["admin"]
+
+[[children]]
+id = "product.admin.list"
+text = "ProductManage"
+allowed_roles = ["admin"]
+
+[[children]]
+id = "user.list"
+text = "UserManage"
+allowed_roles = ["admin"]
