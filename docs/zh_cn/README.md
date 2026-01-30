@@ -18,17 +18,16 @@ BFE控制面包含如下组件：
 
 通过查看 [部署说明](/docs/zh_cn/deploy.md) 快速运行 API Server。
 
-### 容器与 Kubernetes（示例）
+### 容器（示例）
 
 本仓库提供了完整的容器化部署支持：
 
 - **Dashboard 集成**：镜像构建时自动下载并打包 Dashboard v0.0.2（可通过 `DASHBOARD_VERSION` build-arg 自定义）
 - **构建本地镜像**：`make docker`
 - **推送镜像（多架构）**：`REGISTRY=your-registry make docker-push`
-- **Kubernetes 一条命令部署样例**：见 `examples/kubernetes/`（`kubectl apply -k .`）
-- **运行时路径**：容器内工作目录 `/home/work/api-server`
-
-详见 [快速开始文档](specs/002-docker-k8s-deploy/quickstart.md) 和 [部署说明](/docs/zh_cn/deploy.md)。
+- **运行时路径**：
+  - 容器内工作目录 `/home/work/api-server`
+  - 容器内配置目录 `/home/work/api-server/conf`
 
 ## 升级
 

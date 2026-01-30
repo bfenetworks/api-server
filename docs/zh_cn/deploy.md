@@ -41,7 +41,6 @@ BFE控制面包含如下组件：
     - 本仓库提供 `Dockerfile` 与 Makefile 目标：
         - 构建本地镜像：`make docker`
         - 构建并推送（多架构）：`REGISTRY=your-registry make docker-push`
-    - Kubernetes 一条命令部署样例位于 `examples/kubernetes/`，可执行 `kubectl apply -k .`
 1. 修改初始配置文件，详见[配置文件说明](./config_param.md)
 - 特别注意：绝大多数配置可以使用默认配置，最小修改集合为 **数据库用户名和密码**
 1. 启动 API Server。执行`./api-server -c ./conf -sc api_server.toml -l ./log `。如果不需要指定启动参数，直接执行 `./api-server` 即可

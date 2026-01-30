@@ -17,3 +17,7 @@ output
 dist
 api-server
 docs/zh_cn/open_api/node_modules
+
+.github
+.specify
+.vscode
